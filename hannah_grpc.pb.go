@@ -84,6 +84,8 @@ const (
 	HannahService_ProvisionSatellite_FullMethodName        = "/hannah.HannahService/ProvisionSatellite"
 	HannahService_EnrollVoiceprint_FullMethodName          = "/hannah.HannahService/EnrollVoiceprint"
 	HannahService_TimerConnect_FullMethodName              = "/hannah.HannahService/TimerConnect"
+	HannahService_GetTimers_FullMethodName                 = "/hannah.HannahService/GetTimers"
+	HannahService_DeleteTimer_FullMethodName               = "/hannah.HannahService/DeleteTimer"
 	HannahService_AgentConnect_FullMethodName              = "/hannah.HannahService/AgentConnect"
 )
 
@@ -214,6 +216,11 @@ type HannahServiceClient interface {
 	// The Timer Service initiates the connection; if Hannah restarts, the service reconnects.
 	// Hannah sends timer commands (create, cancel, list); the service fires events when timers expire.
 	TimerConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TimerMessage, TimerCommand], error)
+	// --- Timer Admin ---
+	// Query and cancel timers independent of the TimerConnect stream — e.g. for an
+	// Admin-UI or Telegram bot listing/cancelling a user's active timers.
+	GetTimers(ctx context.Context, in *GetTimersRequest, opts ...grpc.CallOption) (*GetTimersResponse, error)
+	DeleteTimer(ctx context.Context, in *DeleteTimerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- ioBroker Agent ---
 	// Single bidirectional stream between the HannahAgent ioBroker adapter and Hannah Core.
 	// The adapter pushes state updates (device states, presence, text commands);
@@ -904,6 +911,26 @@ func (c *hannahServiceClient) TimerConnect(ctx context.Context, opts ...grpc.Cal
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_TimerConnectClient = grpc.BidiStreamingClient[TimerMessage, TimerCommand]
 
+func (c *hannahServiceClient) GetTimers(ctx context.Context, in *GetTimersRequest, opts ...grpc.CallOption) (*GetTimersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTimersResponse)
+	err := c.cc.Invoke(ctx, HannahService_GetTimers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) DeleteTimer(ctx context.Context, in *DeleteTimerRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_DeleteTimer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *hannahServiceClient) AgentConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AgentMessage, AgentCommand], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[4], HannahService_AgentConnect_FullMethodName, cOpts...)
@@ -1044,6 +1071,11 @@ type HannahServiceServer interface {
 	// The Timer Service initiates the connection; if Hannah restarts, the service reconnects.
 	// Hannah sends timer commands (create, cancel, list); the service fires events when timers expire.
 	TimerConnect(grpc.BidiStreamingServer[TimerMessage, TimerCommand]) error
+	// --- Timer Admin ---
+	// Query and cancel timers independent of the TimerConnect stream — e.g. for an
+	// Admin-UI or Telegram bot listing/cancelling a user's active timers.
+	GetTimers(context.Context, *GetTimersRequest) (*GetTimersResponse, error)
+	DeleteTimer(context.Context, *DeleteTimerRequest) (*StatusResponse, error)
 	// --- ioBroker Agent ---
 	// Single bidirectional stream between the HannahAgent ioBroker adapter and Hannah Core.
 	// The adapter pushes state updates (device states, presence, text commands);
@@ -1254,6 +1286,12 @@ func (UnimplementedHannahServiceServer) EnrollVoiceprint(context.Context, *Enrol
 }
 func (UnimplementedHannahServiceServer) TimerConnect(grpc.BidiStreamingServer[TimerMessage, TimerCommand]) error {
 	return status.Errorf(codes.Unimplemented, "method TimerConnect not implemented")
+}
+func (UnimplementedHannahServiceServer) GetTimers(context.Context, *GetTimersRequest) (*GetTimersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTimers not implemented")
+}
+func (UnimplementedHannahServiceServer) DeleteTimer(context.Context, *DeleteTimerRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTimer not implemented")
 }
 func (UnimplementedHannahServiceServer) AgentConnect(grpc.BidiStreamingServer[AgentMessage, AgentCommand]) error {
 	return status.Errorf(codes.Unimplemented, "method AgentConnect not implemented")
@@ -2413,6 +2451,42 @@ func _HannahService_TimerConnect_Handler(srv interface{}, stream grpc.ServerStre
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_TimerConnectServer = grpc.BidiStreamingServer[TimerMessage, TimerCommand]
 
+func _HannahService_GetTimers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTimersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).GetTimers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_GetTimers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).GetTimers(ctx, req.(*GetTimersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_DeleteTimer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTimerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).DeleteTimer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_DeleteTimer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).DeleteTimer(ctx, req.(*DeleteTimerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _HannahService_AgentConnect_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(HannahServiceServer).AgentConnect(&grpc.GenericServerStream[AgentMessage, AgentCommand]{ServerStream: stream})
 }
@@ -2670,6 +2744,14 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EnrollVoiceprint",
 			Handler:    _HannahService_EnrollVoiceprint_Handler,
+		},
+		{
+			MethodName: "GetTimers",
+			Handler:    _HannahService_GetTimers_Handler,
+		},
+		{
+			MethodName: "DeleteTimer",
+			Handler:    _HannahService_DeleteTimer_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
