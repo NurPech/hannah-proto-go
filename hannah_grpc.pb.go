@@ -25,6 +25,7 @@ const (
 	HannahService_UnlinkAccount_FullMethodName             = "/hannah.HannahService/UnlinkAccount"
 	HannahService_SetTrustLevel_FullMethodName             = "/hannah.HannahService/SetTrustLevel"
 	HannahService_SetSystemMessages_FullMethodName         = "/hannah.HannahService/SetSystemMessages"
+	HannahService_SetAutomation_FullMethodName             = "/hannah.HannahService/SetAutomation"
 	HannahService_Login_FullMethodName                     = "/hannah.HannahService/Login"
 	HannahService_CreateUser_FullMethodName                = "/hannah.HannahService/CreateUser"
 	HannahService_UpdateUser_FullMethodName                = "/hannah.HannahService/UpdateUser"
@@ -87,6 +88,7 @@ const (
 	HannahService_GetTimers_FullMethodName                 = "/hannah.HannahService/GetTimers"
 	HannahService_DeleteTimer_FullMethodName               = "/hannah.HannahService/DeleteTimer"
 	HannahService_AgentConnect_FullMethodName              = "/hannah.HannahService/AgentConnect"
+	HannahService_AutomationConnect_FullMethodName         = "/hannah.HannahService/AutomationConnect"
 )
 
 // HannahServiceClient is the client API for HannahService service.
@@ -100,6 +102,9 @@ type HannahServiceClient interface {
 	UnlinkAccount(ctx context.Context, in *UnlinkAccountRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	SetTrustLevel(ctx context.Context, in *SetTrustLevelRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	SetSystemMessages(ctx context.Context, in *SetSystemMessagesRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Enable/disable an automation service (e.g. "telegram_autoresponder") for a user.
+	// Pushes a live update to any connected AutomationConnect stream registered for it.
+	SetAutomation(ctx context.Context, in *SetAutomationRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	// --- User-Verwaltung (Admin-UI, #27 Phase 6) ---
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
@@ -227,6 +232,14 @@ type HannahServiceClient interface {
 	// Hannah pushes device-control commands and on-demand state-subscription requests back.
 	// The adapter initiates the connection; if Hannah restarts, the adapter reconnects.
 	AgentConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AgentMessage, AgentCommand], error)
+	// --- Automations ---
+	// Bidirectional stream for external automation services (e.g. telegram_autoresponder).
+	// The service sends an AutomationRegister identifying itself, then Hannah replies with
+	// an AutomationSnapshot (all users with it currently enabled) followed by live
+	// AutomationStateChanged deltas as users toggle it via SetAutomation/voice.
+	// Chosen over SubscribeEvents so a reconnecting service always gets a fresh snapshot
+	// instead of missing state changes that happened while it was offline.
+	AutomationConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AutomationMessage, AutomationCommand], error)
 }
 
 type hannahServiceClient struct {
@@ -291,6 +304,16 @@ func (c *hannahServiceClient) SetSystemMessages(ctx context.Context, in *SetSyst
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, HannahService_SetSystemMessages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) SetAutomation(ctx context.Context, in *SetAutomationRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_SetAutomation_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -944,6 +967,19 @@ func (c *hannahServiceClient) AgentConnect(ctx context.Context, opts ...grpc.Cal
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_AgentConnectClient = grpc.BidiStreamingClient[AgentMessage, AgentCommand]
 
+func (c *hannahServiceClient) AutomationConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AutomationMessage, AutomationCommand], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[5], HannahService_AutomationConnect_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[AutomationMessage, AutomationCommand]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_AutomationConnectClient = grpc.BidiStreamingClient[AutomationMessage, AutomationCommand]
+
 // HannahServiceServer is the server API for HannahService service.
 // All implementations must embed UnimplementedHannahServiceServer
 // for forward compatibility.
@@ -955,6 +991,9 @@ type HannahServiceServer interface {
 	UnlinkAccount(context.Context, *UnlinkAccountRequest) (*StatusResponse, error)
 	SetTrustLevel(context.Context, *SetTrustLevelRequest) (*StatusResponse, error)
 	SetSystemMessages(context.Context, *SetSystemMessagesRequest) (*StatusResponse, error)
+	// Enable/disable an automation service (e.g. "telegram_autoresponder") for a user.
+	// Pushes a live update to any connected AutomationConnect stream registered for it.
+	SetAutomation(context.Context, *SetAutomationRequest) (*StatusResponse, error)
 	Login(context.Context, *LoginRequest) (*UserResponse, error)
 	// --- User-Verwaltung (Admin-UI, #27 Phase 6) ---
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
@@ -1082,6 +1121,14 @@ type HannahServiceServer interface {
 	// Hannah pushes device-control commands and on-demand state-subscription requests back.
 	// The adapter initiates the connection; if Hannah restarts, the adapter reconnects.
 	AgentConnect(grpc.BidiStreamingServer[AgentMessage, AgentCommand]) error
+	// --- Automations ---
+	// Bidirectional stream for external automation services (e.g. telegram_autoresponder).
+	// The service sends an AutomationRegister identifying itself, then Hannah replies with
+	// an AutomationSnapshot (all users with it currently enabled) followed by live
+	// AutomationStateChanged deltas as users toggle it via SetAutomation/voice.
+	// Chosen over SubscribeEvents so a reconnecting service always gets a fresh snapshot
+	// instead of missing state changes that happened while it was offline.
+	AutomationConnect(grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]) error
 	mustEmbedUnimplementedHannahServiceServer()
 }
 
@@ -1109,6 +1156,9 @@ func (UnimplementedHannahServiceServer) SetTrustLevel(context.Context, *SetTrust
 }
 func (UnimplementedHannahServiceServer) SetSystemMessages(context.Context, *SetSystemMessagesRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetSystemMessages not implemented")
+}
+func (UnimplementedHannahServiceServer) SetAutomation(context.Context, *SetAutomationRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAutomation not implemented")
 }
 func (UnimplementedHannahServiceServer) Login(context.Context, *LoginRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
@@ -1296,6 +1346,9 @@ func (UnimplementedHannahServiceServer) DeleteTimer(context.Context, *DeleteTime
 func (UnimplementedHannahServiceServer) AgentConnect(grpc.BidiStreamingServer[AgentMessage, AgentCommand]) error {
 	return status.Errorf(codes.Unimplemented, "method AgentConnect not implemented")
 }
+func (UnimplementedHannahServiceServer) AutomationConnect(grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]) error {
+	return status.Errorf(codes.Unimplemented, "method AutomationConnect not implemented")
+}
 func (UnimplementedHannahServiceServer) mustEmbedUnimplementedHannahServiceServer() {}
 func (UnimplementedHannahServiceServer) testEmbeddedByValue()                       {}
 
@@ -1421,6 +1474,24 @@ func _HannahService_SetSystemMessages_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(HannahServiceServer).SetSystemMessages(ctx, req.(*SetSystemMessagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_SetAutomation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAutomationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).SetAutomation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_SetAutomation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).SetAutomation(ctx, req.(*SetAutomationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2494,6 +2565,13 @@ func _HannahService_AgentConnect_Handler(srv interface{}, stream grpc.ServerStre
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_AgentConnectServer = grpc.BidiStreamingServer[AgentMessage, AgentCommand]
 
+func _HannahService_AutomationConnect_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HannahServiceServer).AutomationConnect(&grpc.GenericServerStream[AutomationMessage, AutomationCommand]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_AutomationConnectServer = grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]
+
 // HannahService_ServiceDesc is the grpc.ServiceDesc for HannahService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2524,6 +2602,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetSystemMessages",
 			Handler:    _HannahService_SetSystemMessages_Handler,
+		},
+		{
+			MethodName: "SetAutomation",
+			Handler:    _HannahService_SetAutomation_Handler,
 		},
 		{
 			MethodName: "Login",
@@ -2780,6 +2862,12 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "AgentConnect",
 			Handler:       _HannahService_AgentConnect_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "AutomationConnect",
+			Handler:       _HannahService_AutomationConnect_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
