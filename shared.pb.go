@@ -20,6 +20,67 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Classification of an ioBroker state's value, derived from common.type/role/states.
+// Lets consumers (e.g. the WebUI trigger editor) offer the right operators/input widget
+// per state instead of requiring a free-text ioBroker state ID.
+type StateType int32
+
+const (
+	StateType_STATE_TYPE_UNSPECIFIED StateType = 0
+	StateType_BOOLEAN                StateType = 1
+	StateType_NUMERIC                StateType = 2
+	StateType_ENUM                   StateType = 3
+	StateType_COLOR                  StateType = 4
+	StateType_TEXT                   StateType = 5
+)
+
+// Enum value maps for StateType.
+var (
+	StateType_name = map[int32]string{
+		0: "STATE_TYPE_UNSPECIFIED",
+		1: "BOOLEAN",
+		2: "NUMERIC",
+		3: "ENUM",
+		4: "COLOR",
+		5: "TEXT",
+	}
+	StateType_value = map[string]int32{
+		"STATE_TYPE_UNSPECIFIED": 0,
+		"BOOLEAN":                1,
+		"NUMERIC":                2,
+		"ENUM":                   3,
+		"COLOR":                  4,
+		"TEXT":                   5,
+	}
+)
+
+func (x StateType) Enum() *StateType {
+	p := new(StateType)
+	*p = x
+	return p
+}
+
+func (x StateType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (StateType) Descriptor() protoreflect.EnumDescriptor {
+	return file_shared_proto_enumTypes[0].Descriptor()
+}
+
+func (StateType) Type() protoreflect.EnumType {
+	return &file_shared_proto_enumTypes[0]
+}
+
+func (x StateType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use StateType.Descriptor instead.
+func (StateType) EnumDescriptor() ([]byte, []int) {
+	return file_shared_proto_rawDescGZIP(), []int{0}
+}
+
 type Empty struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -113,6 +174,54 @@ func (x *StatusResponse) GetMessage() string {
 	return ""
 }
 
+// Allowed values for an ENUM/COLOR state, e.g. from ioBroker's common.states.
+type EnumValues struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Values map[string]string `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // raw value -> display label
+}
+
+func (x *EnumValues) Reset() {
+	*x = EnumValues{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_shared_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EnumValues) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumValues) ProtoMessage() {}
+
+func (x *EnumValues) ProtoReflect() protoreflect.Message {
+	mi := &file_shared_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EnumValues.ProtoReflect.Descriptor instead.
+func (*EnumValues) Descriptor() ([]byte, []int) {
+	return file_shared_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *EnumValues) GetValues() map[string]string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
 var File_shared_proto protoreflect.FileDescriptor
 
 var file_shared_proto_rawDesc = []byte{
@@ -121,11 +230,25 @@ var file_shared_proto_rawDesc = []byte{
 	0x3a, 0x0a, 0x0e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f,
 	0x6b, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x30, 0x5a, 0x2e, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4e, 0x75, 0x72, 0x50, 0x65, 0x63,
-	0x68, 0x2f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67,
-	0x6f, 0x3b, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x7f, 0x0a, 0x0a, 0x45,
+	0x6e, 0x75, 0x6d, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x12, 0x36, 0x0a, 0x06, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x68, 0x61, 0x6e, 0x6e,
+	0x61, 0x68, 0x2e, 0x45, 0x6e, 0x75, 0x6d, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x2e, 0x56, 0x61,
+	0x6c, 0x75, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x73, 0x1a, 0x39, 0x0a, 0x0b, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x2a, 0x60, 0x0a, 0x09,
+	0x53, 0x74, 0x61, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x16, 0x53, 0x54, 0x41,
+	0x54, 0x45, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46,
+	0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x42, 0x4f, 0x4f, 0x4c, 0x45, 0x41, 0x4e,
+	0x10, 0x01, 0x12, 0x0b, 0x0a, 0x07, 0x4e, 0x55, 0x4d, 0x45, 0x52, 0x49, 0x43, 0x10, 0x02, 0x12,
+	0x08, 0x0a, 0x04, 0x45, 0x4e, 0x55, 0x4d, 0x10, 0x03, 0x12, 0x09, 0x0a, 0x05, 0x43, 0x4f, 0x4c,
+	0x4f, 0x52, 0x10, 0x04, 0x12, 0x08, 0x0a, 0x04, 0x54, 0x45, 0x58, 0x54, 0x10, 0x05, 0x42, 0x30,
+	0x5a, 0x2e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4e, 0x75, 0x72,
+	0x50, 0x65, 0x63, 0x68, 0x2f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2d, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2d, 0x67, 0x6f, 0x3b, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -140,17 +263,22 @@ func file_shared_proto_rawDescGZIP() []byte {
 	return file_shared_proto_rawDescData
 }
 
-var file_shared_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_shared_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_shared_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_shared_proto_goTypes = []any{
-	(*Empty)(nil),          // 0: hannah.Empty
-	(*StatusResponse)(nil), // 1: hannah.StatusResponse
+	(StateType)(0),         // 0: hannah.StateType
+	(*Empty)(nil),          // 1: hannah.Empty
+	(*StatusResponse)(nil), // 2: hannah.StatusResponse
+	(*EnumValues)(nil),     // 3: hannah.EnumValues
+	nil,                    // 4: hannah.EnumValues.ValuesEntry
 }
 var file_shared_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: hannah.EnumValues.values:type_name -> hannah.EnumValues.ValuesEntry
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_shared_proto_init() }
@@ -183,19 +311,32 @@ func file_shared_proto_init() {
 				return nil
 			}
 		}
+		file_shared_proto_msgTypes[2].Exporter = func(v any, i int) any {
+			switch v := v.(*EnumValues); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_shared_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_shared_proto_goTypes,
 		DependencyIndexes: file_shared_proto_depIdxs,
+		EnumInfos:         file_shared_proto_enumTypes,
 		MessageInfos:      file_shared_proto_msgTypes,
 	}.Build()
 	File_shared_proto = out.File
