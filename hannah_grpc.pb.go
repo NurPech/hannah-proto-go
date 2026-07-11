@@ -48,10 +48,6 @@ const (
 	HannahService_UpdateGroup_FullMethodName               = "/hannah.HannahService/UpdateGroup"
 	HannahService_DeleteGroup_FullMethodName               = "/hannah.HannahService/DeleteGroup"
 	HannahService_SetGroupRooms_FullMethodName             = "/hannah.HannahService/SetGroupRooms"
-	HannahService_GetRoutines_FullMethodName               = "/hannah.HannahService/GetRoutines"
-	HannahService_CreateRoutine_FullMethodName             = "/hannah.HannahService/CreateRoutine"
-	HannahService_UpdateRoutine_FullMethodName             = "/hannah.HannahService/UpdateRoutine"
-	HannahService_DeleteRoutine_FullMethodName             = "/hannah.HannahService/DeleteRoutine"
 	HannahService_GetTriggers_FullMethodName               = "/hannah.HannahService/GetTriggers"
 	HannahService_CreateTrigger_FullMethodName             = "/hannah.HannahService/CreateTrigger"
 	HannahService_UpdateTrigger_FullMethodName             = "/hannah.HannahService/UpdateTrigger"
@@ -143,11 +139,7 @@ type HannahServiceClient interface {
 	UpdateGroup(ctx context.Context, in *UpdateGroupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeleteGroup(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	SetGroupRooms(ctx context.Context, in *SetGroupRoomsRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	// --- Routines/Triggers (Admin-UI, #27 Phase 4) ---
-	GetRoutines(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetRoutinesResponse, error)
-	CreateRoutine(ctx context.Context, in *CreateRoutineRequest, opts ...grpc.CallOption) (*CreateRoutineResponse, error)
-	UpdateRoutine(ctx context.Context, in *UpdateRoutineRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	DeleteRoutine(ctx context.Context, in *DeleteRoutineRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// --- Triggers (Admin-UI, #28) ---
 	GetTriggers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetTriggersResponse, error)
 	CreateTrigger(ctx context.Context, in *CreateTriggerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	UpdateTrigger(ctx context.Context, in *UpdateTriggerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
@@ -534,46 +526,6 @@ func (c *hannahServiceClient) SetGroupRooms(ctx context.Context, in *SetGroupRoo
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, HannahService_SetGroupRooms_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *hannahServiceClient) GetRoutines(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetRoutinesResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetRoutinesResponse)
-	err := c.cc.Invoke(ctx, HannahService_GetRoutines_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *hannahServiceClient) CreateRoutine(ctx context.Context, in *CreateRoutineRequest, opts ...grpc.CallOption) (*CreateRoutineResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateRoutineResponse)
-	err := c.cc.Invoke(ctx, HannahService_CreateRoutine_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *hannahServiceClient) UpdateRoutine(ctx context.Context, in *UpdateRoutineRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, HannahService_UpdateRoutine_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *hannahServiceClient) DeleteRoutine(ctx context.Context, in *DeleteRoutineRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, HannahService_DeleteRoutine_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1032,11 +984,7 @@ type HannahServiceServer interface {
 	UpdateGroup(context.Context, *UpdateGroupRequest) (*StatusResponse, error)
 	DeleteGroup(context.Context, *DeleteGroupRequest) (*StatusResponse, error)
 	SetGroupRooms(context.Context, *SetGroupRoomsRequest) (*StatusResponse, error)
-	// --- Routines/Triggers (Admin-UI, #27 Phase 4) ---
-	GetRoutines(context.Context, *Empty) (*GetRoutinesResponse, error)
-	CreateRoutine(context.Context, *CreateRoutineRequest) (*CreateRoutineResponse, error)
-	UpdateRoutine(context.Context, *UpdateRoutineRequest) (*StatusResponse, error)
-	DeleteRoutine(context.Context, *DeleteRoutineRequest) (*StatusResponse, error)
+	// --- Triggers (Admin-UI, #28) ---
 	GetTriggers(context.Context, *Empty) (*GetTriggersResponse, error)
 	CreateTrigger(context.Context, *CreateTriggerRequest) (*StatusResponse, error)
 	UpdateTrigger(context.Context, *UpdateTriggerRequest) (*StatusResponse, error)
@@ -1225,18 +1173,6 @@ func (UnimplementedHannahServiceServer) DeleteGroup(context.Context, *DeleteGrou
 }
 func (UnimplementedHannahServiceServer) SetGroupRooms(context.Context, *SetGroupRoomsRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetGroupRooms not implemented")
-}
-func (UnimplementedHannahServiceServer) GetRoutines(context.Context, *Empty) (*GetRoutinesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRoutines not implemented")
-}
-func (UnimplementedHannahServiceServer) CreateRoutine(context.Context, *CreateRoutineRequest) (*CreateRoutineResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateRoutine not implemented")
-}
-func (UnimplementedHannahServiceServer) UpdateRoutine(context.Context, *UpdateRoutineRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateRoutine not implemented")
-}
-func (UnimplementedHannahServiceServer) DeleteRoutine(context.Context, *DeleteRoutineRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRoutine not implemented")
 }
 func (UnimplementedHannahServiceServer) GetTriggers(context.Context, *Empty) (*GetTriggersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTriggers not implemented")
@@ -1888,78 +1824,6 @@ func _HannahService_SetGroupRooms_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(HannahServiceServer).SetGroupRooms(ctx, req.(*SetGroupRoomsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HannahService_GetRoutines_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HannahServiceServer).GetRoutines(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: HannahService_GetRoutines_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HannahServiceServer).GetRoutines(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HannahService_CreateRoutine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRoutineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HannahServiceServer).CreateRoutine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: HannahService_CreateRoutine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HannahServiceServer).CreateRoutine(ctx, req.(*CreateRoutineRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HannahService_UpdateRoutine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRoutineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HannahServiceServer).UpdateRoutine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: HannahService_UpdateRoutine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HannahServiceServer).UpdateRoutine(ctx, req.(*UpdateRoutineRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HannahService_DeleteRoutine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRoutineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HannahServiceServer).DeleteRoutine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: HannahService_DeleteRoutine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HannahServiceServer).DeleteRoutine(ctx, req.(*DeleteRoutineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2694,22 +2558,6 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetGroupRooms",
 			Handler:    _HannahService_SetGroupRooms_Handler,
-		},
-		{
-			MethodName: "GetRoutines",
-			Handler:    _HannahService_GetRoutines_Handler,
-		},
-		{
-			MethodName: "CreateRoutine",
-			Handler:    _HannahService_CreateRoutine_Handler,
-		},
-		{
-			MethodName: "UpdateRoutine",
-			Handler:    _HannahService_UpdateRoutine_Handler,
-		},
-		{
-			MethodName: "DeleteRoutine",
-			Handler:    _HannahService_DeleteRoutine_Handler,
 		},
 		{
 			MethodName: "GetTriggers",
