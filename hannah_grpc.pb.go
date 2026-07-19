@@ -19,72 +19,73 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	HannahService_GetUsers_FullMethodName                  = "/hannah.HannahService/GetUsers"
-	HannahService_GetUser_FullMethodName                   = "/hannah.HannahService/GetUser"
-	HannahService_LinkAccount_FullMethodName               = "/hannah.HannahService/LinkAccount"
-	HannahService_UnlinkAccount_FullMethodName             = "/hannah.HannahService/UnlinkAccount"
-	HannahService_SetTrustLevel_FullMethodName             = "/hannah.HannahService/SetTrustLevel"
-	HannahService_SetSystemMessages_FullMethodName         = "/hannah.HannahService/SetSystemMessages"
-	HannahService_SetAutomation_FullMethodName             = "/hannah.HannahService/SetAutomation"
-	HannahService_Login_FullMethodName                     = "/hannah.HannahService/Login"
-	HannahService_CreateUser_FullMethodName                = "/hannah.HannahService/CreateUser"
-	HannahService_UpdateUser_FullMethodName                = "/hannah.HannahService/UpdateUser"
-	HannahService_DeleteUser_FullMethodName                = "/hannah.HannahService/DeleteUser"
-	HannahService_GetResidents_FullMethodName              = "/hannah.HannahService/GetResidents"
-	HannahService_GetDevices_FullMethodName                = "/hannah.HannahService/GetDevices"
-	HannahService_ControlDevice_FullMethodName             = "/hannah.HannahService/ControlDevice"
-	HannahService_SubmitText_FullMethodName                = "/hannah.HannahService/SubmitText"
-	HannahService_SubmitVoice_FullMethodName               = "/hannah.HannahService/SubmitVoice"
-	HannahService_Announce_FullMethodName                  = "/hannah.HannahService/Announce"
-	HannahService_Notify_FullMethodName                    = "/hannah.HannahService/Notify"
-	HannahService_GetSatellites_FullMethodName             = "/hannah.HannahService/GetSatellites"
-	HannahService_SetSatelliteRoom_FullMethodName          = "/hannah.HannahService/SetSatelliteRoom"
-	HannahService_SetSatelliteDisplayName_FullMethodName   = "/hannah.HannahService/SetSatelliteDisplayName"
-	HannahService_SetSatelliteOwner_FullMethodName         = "/hannah.HannahService/SetSatelliteOwner"
-	HannahService_DeleteSatellite_FullMethodName           = "/hannah.HannahService/DeleteSatellite"
-	HannahService_GetRooms_FullMethodName                  = "/hannah.HannahService/GetRooms"
-	HannahService_GetGroups_FullMethodName                 = "/hannah.HannahService/GetGroups"
-	HannahService_CreateGroup_FullMethodName               = "/hannah.HannahService/CreateGroup"
-	HannahService_UpdateGroup_FullMethodName               = "/hannah.HannahService/UpdateGroup"
-	HannahService_DeleteGroup_FullMethodName               = "/hannah.HannahService/DeleteGroup"
-	HannahService_SetGroupRooms_FullMethodName             = "/hannah.HannahService/SetGroupRooms"
-	HannahService_GetTriggers_FullMethodName               = "/hannah.HannahService/GetTriggers"
-	HannahService_CreateTrigger_FullMethodName             = "/hannah.HannahService/CreateTrigger"
-	HannahService_UpdateTrigger_FullMethodName             = "/hannah.HannahService/UpdateTrigger"
-	HannahService_DeleteTrigger_FullMethodName             = "/hannah.HannahService/DeleteTrigger"
-	HannahService_GetAlarms_FullMethodName                 = "/hannah.HannahService/GetAlarms"
-	HannahService_CreateAlarm_FullMethodName               = "/hannah.HannahService/CreateAlarm"
-	HannahService_UpdateAlarm_FullMethodName               = "/hannah.HannahService/UpdateAlarm"
-	HannahService_DeleteAlarm_FullMethodName               = "/hannah.HannahService/DeleteAlarm"
-	HannahService_GetSettings_FullMethodName               = "/hannah.HannahService/GetSettings"
-	HannahService_UpdateConfig_FullMethodName              = "/hannah.HannahService/UpdateConfig"
-	HannahService_GetBleTags_FullMethodName                = "/hannah.HannahService/GetBleTags"
-	HannahService_CreateBleTag_FullMethodName              = "/hannah.HannahService/CreateBleTag"
-	HannahService_UpdateBleTag_FullMethodName              = "/hannah.HannahService/UpdateBleTag"
-	HannahService_DeleteBleTag_FullMethodName              = "/hannah.HannahService/DeleteBleTag"
-	HannahService_GetCars_FullMethodName                   = "/hannah.HannahService/GetCars"
-	HannahService_CreateCar_FullMethodName                 = "/hannah.HannahService/CreateCar"
-	HannahService_UpdateCar_FullMethodName                 = "/hannah.HannahService/UpdateCar"
-	HannahService_DeleteCar_FullMethodName                 = "/hannah.HannahService/DeleteCar"
-	HannahService_GetCarState_FullMethodName               = "/hannah.HannahService/GetCarState"
-	HannahService_GetAllCarStates_FullMethodName           = "/hannah.HannahService/GetAllCarStates"
-	HannahService_SubscribeEvents_FullMethodName           = "/hannah.HannahService/SubscribeEvents"
-	HannahService_TriggerFirmwareUpdate_FullMethodName     = "/hannah.HannahService/TriggerFirmwareUpdate"
-	HannahService_RequestSatelliteCapture_FullMethodName   = "/hannah.HannahService/RequestSatelliteCapture"
-	HannahService_ReleaseSatelliteCapture_FullMethodName   = "/hannah.HannahService/ReleaseSatelliteCapture"
-	HannahService_StreamSatelliteAudio_FullMethodName      = "/hannah.HannahService/StreamSatelliteAudio"
-	HannahService_TriggerPlink_FullMethodName              = "/hannah.HannahService/TriggerPlink"
-	HannahService_RegisterProxy_FullMethodName             = "/hannah.HannahService/RegisterProxy"
-	HannahService_SubmitSatelliteAudio_FullMethodName      = "/hannah.HannahService/SubmitSatelliteAudio"
-	HannahService_NotifySatelliteRegistered_FullMethodName = "/hannah.HannahService/NotifySatelliteRegistered"
-	HannahService_NotifySatelliteGone_FullMethodName       = "/hannah.HannahService/NotifySatelliteGone"
-	HannahService_ProvisionSatellite_FullMethodName        = "/hannah.HannahService/ProvisionSatellite"
-	HannahService_EnrollVoiceprint_FullMethodName          = "/hannah.HannahService/EnrollVoiceprint"
-	HannahService_TimerConnect_FullMethodName              = "/hannah.HannahService/TimerConnect"
-	HannahService_GetTimers_FullMethodName                 = "/hannah.HannahService/GetTimers"
-	HannahService_DeleteTimer_FullMethodName               = "/hannah.HannahService/DeleteTimer"
-	HannahService_AgentConnect_FullMethodName              = "/hannah.HannahService/AgentConnect"
-	HannahService_AutomationConnect_FullMethodName         = "/hannah.HannahService/AutomationConnect"
+	HannahService_GetUsers_FullMethodName                      = "/hannah.HannahService/GetUsers"
+	HannahService_GetUser_FullMethodName                       = "/hannah.HannahService/GetUser"
+	HannahService_LinkAccount_FullMethodName                   = "/hannah.HannahService/LinkAccount"
+	HannahService_UnlinkAccount_FullMethodName                 = "/hannah.HannahService/UnlinkAccount"
+	HannahService_SetTrustLevel_FullMethodName                 = "/hannah.HannahService/SetTrustLevel"
+	HannahService_SetSystemMessages_FullMethodName             = "/hannah.HannahService/SetSystemMessages"
+	HannahService_SetAutomation_FullMethodName                 = "/hannah.HannahService/SetAutomation"
+	HannahService_Login_FullMethodName                         = "/hannah.HannahService/Login"
+	HannahService_CreateUser_FullMethodName                    = "/hannah.HannahService/CreateUser"
+	HannahService_UpdateUser_FullMethodName                    = "/hannah.HannahService/UpdateUser"
+	HannahService_DeleteUser_FullMethodName                    = "/hannah.HannahService/DeleteUser"
+	HannahService_GetResidents_FullMethodName                  = "/hannah.HannahService/GetResidents"
+	HannahService_GetDevices_FullMethodName                    = "/hannah.HannahService/GetDevices"
+	HannahService_ControlDevice_FullMethodName                 = "/hannah.HannahService/ControlDevice"
+	HannahService_SubmitText_FullMethodName                    = "/hannah.HannahService/SubmitText"
+	HannahService_SubmitVoice_FullMethodName                   = "/hannah.HannahService/SubmitVoice"
+	HannahService_Announce_FullMethodName                      = "/hannah.HannahService/Announce"
+	HannahService_Notify_FullMethodName                        = "/hannah.HannahService/Notify"
+	HannahService_GetSatellites_FullMethodName                 = "/hannah.HannahService/GetSatellites"
+	HannahService_SetSatelliteRoom_FullMethodName              = "/hannah.HannahService/SetSatelliteRoom"
+	HannahService_SetSatelliteDisplayName_FullMethodName       = "/hannah.HannahService/SetSatelliteDisplayName"
+	HannahService_SetSatelliteOwner_FullMethodName             = "/hannah.HannahService/SetSatelliteOwner"
+	HannahService_SetSatelliteSmalltalkFollowup_FullMethodName = "/hannah.HannahService/SetSatelliteSmalltalkFollowup"
+	HannahService_DeleteSatellite_FullMethodName               = "/hannah.HannahService/DeleteSatellite"
+	HannahService_GetRooms_FullMethodName                      = "/hannah.HannahService/GetRooms"
+	HannahService_GetGroups_FullMethodName                     = "/hannah.HannahService/GetGroups"
+	HannahService_CreateGroup_FullMethodName                   = "/hannah.HannahService/CreateGroup"
+	HannahService_UpdateGroup_FullMethodName                   = "/hannah.HannahService/UpdateGroup"
+	HannahService_DeleteGroup_FullMethodName                   = "/hannah.HannahService/DeleteGroup"
+	HannahService_SetGroupRooms_FullMethodName                 = "/hannah.HannahService/SetGroupRooms"
+	HannahService_GetTriggers_FullMethodName                   = "/hannah.HannahService/GetTriggers"
+	HannahService_CreateTrigger_FullMethodName                 = "/hannah.HannahService/CreateTrigger"
+	HannahService_UpdateTrigger_FullMethodName                 = "/hannah.HannahService/UpdateTrigger"
+	HannahService_DeleteTrigger_FullMethodName                 = "/hannah.HannahService/DeleteTrigger"
+	HannahService_GetAlarms_FullMethodName                     = "/hannah.HannahService/GetAlarms"
+	HannahService_CreateAlarm_FullMethodName                   = "/hannah.HannahService/CreateAlarm"
+	HannahService_UpdateAlarm_FullMethodName                   = "/hannah.HannahService/UpdateAlarm"
+	HannahService_DeleteAlarm_FullMethodName                   = "/hannah.HannahService/DeleteAlarm"
+	HannahService_GetSettings_FullMethodName                   = "/hannah.HannahService/GetSettings"
+	HannahService_UpdateConfig_FullMethodName                  = "/hannah.HannahService/UpdateConfig"
+	HannahService_GetBleTags_FullMethodName                    = "/hannah.HannahService/GetBleTags"
+	HannahService_CreateBleTag_FullMethodName                  = "/hannah.HannahService/CreateBleTag"
+	HannahService_UpdateBleTag_FullMethodName                  = "/hannah.HannahService/UpdateBleTag"
+	HannahService_DeleteBleTag_FullMethodName                  = "/hannah.HannahService/DeleteBleTag"
+	HannahService_GetCars_FullMethodName                       = "/hannah.HannahService/GetCars"
+	HannahService_CreateCar_FullMethodName                     = "/hannah.HannahService/CreateCar"
+	HannahService_UpdateCar_FullMethodName                     = "/hannah.HannahService/UpdateCar"
+	HannahService_DeleteCar_FullMethodName                     = "/hannah.HannahService/DeleteCar"
+	HannahService_GetCarState_FullMethodName                   = "/hannah.HannahService/GetCarState"
+	HannahService_GetAllCarStates_FullMethodName               = "/hannah.HannahService/GetAllCarStates"
+	HannahService_SubscribeEvents_FullMethodName               = "/hannah.HannahService/SubscribeEvents"
+	HannahService_TriggerFirmwareUpdate_FullMethodName         = "/hannah.HannahService/TriggerFirmwareUpdate"
+	HannahService_RequestSatelliteCapture_FullMethodName       = "/hannah.HannahService/RequestSatelliteCapture"
+	HannahService_ReleaseSatelliteCapture_FullMethodName       = "/hannah.HannahService/ReleaseSatelliteCapture"
+	HannahService_StreamSatelliteAudio_FullMethodName          = "/hannah.HannahService/StreamSatelliteAudio"
+	HannahService_TriggerPlink_FullMethodName                  = "/hannah.HannahService/TriggerPlink"
+	HannahService_RegisterProxy_FullMethodName                 = "/hannah.HannahService/RegisterProxy"
+	HannahService_SubmitSatelliteAudio_FullMethodName          = "/hannah.HannahService/SubmitSatelliteAudio"
+	HannahService_NotifySatelliteRegistered_FullMethodName     = "/hannah.HannahService/NotifySatelliteRegistered"
+	HannahService_NotifySatelliteGone_FullMethodName           = "/hannah.HannahService/NotifySatelliteGone"
+	HannahService_ProvisionSatellite_FullMethodName            = "/hannah.HannahService/ProvisionSatellite"
+	HannahService_EnrollVoiceprint_FullMethodName              = "/hannah.HannahService/EnrollVoiceprint"
+	HannahService_TimerConnect_FullMethodName                  = "/hannah.HannahService/TimerConnect"
+	HannahService_GetTimers_FullMethodName                     = "/hannah.HannahService/GetTimers"
+	HannahService_DeleteTimer_FullMethodName                   = "/hannah.HannahService/DeleteTimer"
+	HannahService_AgentConnect_FullMethodName                  = "/hannah.HannahService/AgentConnect"
+	HannahService_AutomationConnect_FullMethodName             = "/hannah.HannahService/AutomationConnect"
 )
 
 // HannahServiceClient is the client API for HannahService service.
@@ -130,6 +131,9 @@ type HannahServiceClient interface {
 	SetSatelliteDisplayName(ctx context.Context, in *SetSatelliteDisplayNameRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// Assign a satellite to a Person (User), independent of its room. #31
 	SetSatelliteOwner(ctx context.Context, in *SetSatelliteOwnerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Toggle whether the satellite's mic reopens after a Smalltalk answer instead of
+	// waiting for wake-word/PTT again (silence-timeout lives in the satellite firmware). #158
+	SetSatelliteSmalltalkFollowup(ctx context.Context, in *SetSatelliteSmalltalkFollowupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// Delete existing satellite
 	DeleteSatellite(ctx context.Context, in *DeleteSatelliteRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Rooms/Groups (Admin-UI, #27 Phase 1) ---
@@ -456,6 +460,16 @@ func (c *hannahServiceClient) SetSatelliteOwner(ctx context.Context, in *SetSate
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, HannahService_SetSatelliteOwner_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) SetSatelliteSmalltalkFollowup(ctx context.Context, in *SetSatelliteSmalltalkFollowupRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_SetSatelliteSmalltalkFollowup_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -975,6 +989,9 @@ type HannahServiceServer interface {
 	SetSatelliteDisplayName(context.Context, *SetSatelliteDisplayNameRequest) (*StatusResponse, error)
 	// Assign a satellite to a Person (User), independent of its room. #31
 	SetSatelliteOwner(context.Context, *SetSatelliteOwnerRequest) (*StatusResponse, error)
+	// Toggle whether the satellite's mic reopens after a Smalltalk answer instead of
+	// waiting for wake-word/PTT again (silence-timeout lives in the satellite firmware). #158
+	SetSatelliteSmalltalkFollowup(context.Context, *SetSatelliteSmalltalkFollowupRequest) (*StatusResponse, error)
 	// Delete existing satellite
 	DeleteSatellite(context.Context, *DeleteSatelliteRequest) (*StatusResponse, error)
 	// --- Rooms/Groups (Admin-UI, #27 Phase 1) ---
@@ -1152,6 +1169,9 @@ func (UnimplementedHannahServiceServer) SetSatelliteDisplayName(context.Context,
 }
 func (UnimplementedHannahServiceServer) SetSatelliteOwner(context.Context, *SetSatelliteOwnerRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetSatelliteOwner not implemented")
+}
+func (UnimplementedHannahServiceServer) SetSatelliteSmalltalkFollowup(context.Context, *SetSatelliteSmalltalkFollowupRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetSatelliteSmalltalkFollowup not implemented")
 }
 func (UnimplementedHannahServiceServer) DeleteSatellite(context.Context, *DeleteSatelliteRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSatellite not implemented")
@@ -1698,6 +1718,24 @@ func _HannahService_SetSatelliteOwner_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(HannahServiceServer).SetSatelliteOwner(ctx, req.(*SetSatelliteOwnerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_SetSatelliteSmalltalkFollowup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetSatelliteSmalltalkFollowupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).SetSatelliteSmalltalkFollowup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_SetSatelliteSmalltalkFollowup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).SetSatelliteSmalltalkFollowup(ctx, req.(*SetSatelliteSmalltalkFollowupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2530,6 +2568,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetSatelliteOwner",
 			Handler:    _HannahService_SetSatelliteOwner_Handler,
+		},
+		{
+			MethodName: "SetSatelliteSmalltalkFollowup",
+			Handler:    _HannahService_SetSatelliteSmalltalkFollowup_Handler,
 		},
 		{
 			MethodName: "DeleteSatellite",
