@@ -71,6 +71,7 @@ const (
 	HannahService_GetAllCarStates_FullMethodName               = "/hannah.HannahService/GetAllCarStates"
 	HannahService_SubscribeEvents_FullMethodName               = "/hannah.HannahService/SubscribeEvents"
 	HannahService_TriggerFirmwareUpdate_FullMethodName         = "/hannah.HannahService/TriggerFirmwareUpdate"
+	HannahService_TriggerSatelliteRestart_FullMethodName       = "/hannah.HannahService/TriggerSatelliteRestart"
 	HannahService_RequestSatelliteCapture_FullMethodName       = "/hannah.HannahService/RequestSatelliteCapture"
 	HannahService_ReleaseSatelliteCapture_FullMethodName       = "/hannah.HannahService/ReleaseSatelliteCapture"
 	HannahService_StreamSatelliteAudio_FullMethodName          = "/hannah.HannahService/StreamSatelliteAudio"
@@ -182,6 +183,11 @@ type HannahServiceClient interface {
 	// --- Firmware Manager ---
 	// Trigger an immediate OTA update for a satellite (bypasses residents check).
 	TriggerFirmwareUpdate(ctx context.Context, in *TriggerFirmwareUpdateRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Trigger an ordered remote restart (esp_restart()) of a satellite over MQTT.
+	// Diagnostic/rejuvenation tool for suspected resource exhaustion (heap fragmentation
+	// after long uptime) — works even when the satellite's OTA/webserver no longer
+	// respond, since MQTT stays alive in that failure mode.
+	TriggerSatelliteRestart(ctx context.Context, in *TriggerSatelliteRestartRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Wakeword Capture ---
 	// Put a satellite in audio-capture mode for wakeword training data collection.
 	// While captured: wakeword detection is suspended, speaker is muted, DND is active.
@@ -775,6 +781,16 @@ func (c *hannahServiceClient) TriggerFirmwareUpdate(ctx context.Context, in *Tri
 	return out, nil
 }
 
+func (c *hannahServiceClient) TriggerSatelliteRestart(ctx context.Context, in *TriggerSatelliteRestartRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_TriggerSatelliteRestart_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *hannahServiceClient) RequestSatelliteCapture(ctx context.Context, in *SatelliteCaptureRequest, opts ...grpc.CallOption) (*SatelliteCaptureResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SatelliteCaptureResponse)
@@ -1040,6 +1056,11 @@ type HannahServiceServer interface {
 	// --- Firmware Manager ---
 	// Trigger an immediate OTA update for a satellite (bypasses residents check).
 	TriggerFirmwareUpdate(context.Context, *TriggerFirmwareUpdateRequest) (*StatusResponse, error)
+	// Trigger an ordered remote restart (esp_restart()) of a satellite over MQTT.
+	// Diagnostic/rejuvenation tool for suspected resource exhaustion (heap fragmentation
+	// after long uptime) — works even when the satellite's OTA/webserver no longer
+	// respond, since MQTT stays alive in that failure mode.
+	TriggerSatelliteRestart(context.Context, *TriggerSatelliteRestartRequest) (*StatusResponse, error)
 	// --- Wakeword Capture ---
 	// Put a satellite in audio-capture mode for wakeword training data collection.
 	// While captured: wakeword detection is suspended, speaker is muted, DND is active.
@@ -1259,6 +1280,9 @@ func (UnimplementedHannahServiceServer) SubscribeEvents(*EventFilter, grpc.Serve
 }
 func (UnimplementedHannahServiceServer) TriggerFirmwareUpdate(context.Context, *TriggerFirmwareUpdateRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TriggerFirmwareUpdate not implemented")
+}
+func (UnimplementedHannahServiceServer) TriggerSatelliteRestart(context.Context, *TriggerSatelliteRestartRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TriggerSatelliteRestart not implemented")
 }
 func (UnimplementedHannahServiceServer) RequestSatelliteCapture(context.Context, *SatelliteCaptureRequest) (*SatelliteCaptureResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestSatelliteCapture not implemented")
@@ -2255,6 +2279,24 @@ func _HannahService_TriggerFirmwareUpdate_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HannahService_TriggerSatelliteRestart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TriggerSatelliteRestartRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).TriggerSatelliteRestart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_TriggerSatelliteRestart_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).TriggerSatelliteRestart(ctx, req.(*TriggerSatelliteRestartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _HannahService_RequestSatelliteCapture_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SatelliteCaptureRequest)
 	if err := dec(in); err != nil {
@@ -2684,6 +2726,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TriggerFirmwareUpdate",
 			Handler:    _HannahService_TriggerFirmwareUpdate_Handler,
+		},
+		{
+			MethodName: "TriggerSatelliteRestart",
+			Handler:    _HannahService_TriggerSatelliteRestart_Handler,
 		},
 		{
 			MethodName: "RequestSatelliteCapture",
