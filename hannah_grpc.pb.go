@@ -48,7 +48,7 @@ const (
 	HannahService_CreateGroup_FullMethodName                   = "/hannah.HannahService/CreateGroup"
 	HannahService_UpdateGroup_FullMethodName                   = "/hannah.HannahService/UpdateGroup"
 	HannahService_DeleteGroup_FullMethodName                   = "/hannah.HannahService/DeleteGroup"
-	HannahService_SetGroupRooms_FullMethodName                 = "/hannah.HannahService/SetGroupRooms"
+	HannahService_SetGroupSatellites_FullMethodName            = "/hannah.HannahService/SetGroupSatellites"
 	HannahService_GetTriggers_FullMethodName                   = "/hannah.HannahService/GetTriggers"
 	HannahService_CreateTrigger_FullMethodName                 = "/hannah.HannahService/CreateTrigger"
 	HannahService_UpdateTrigger_FullMethodName                 = "/hannah.HannahService/UpdateTrigger"
@@ -143,7 +143,7 @@ type HannahServiceClient interface {
 	CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	UpdateGroup(ctx context.Context, in *UpdateGroupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeleteGroup(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	SetGroupRooms(ctx context.Context, in *SetGroupRoomsRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	SetGroupSatellites(ctx context.Context, in *SetGroupSatellitesRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Triggers (Admin-UI, #28) ---
 	GetTriggers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetTriggersResponse, error)
 	CreateTrigger(ctx context.Context, in *CreateTriggerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
@@ -542,10 +542,10 @@ func (c *hannahServiceClient) DeleteGroup(ctx context.Context, in *DeleteGroupRe
 	return out, nil
 }
 
-func (c *hannahServiceClient) SetGroupRooms(ctx context.Context, in *SetGroupRoomsRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *hannahServiceClient) SetGroupSatellites(ctx context.Context, in *SetGroupSatellitesRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, HannahService_SetGroupRooms_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, HannahService_SetGroupSatellites_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1016,7 +1016,7 @@ type HannahServiceServer interface {
 	CreateGroup(context.Context, *CreateGroupRequest) (*StatusResponse, error)
 	UpdateGroup(context.Context, *UpdateGroupRequest) (*StatusResponse, error)
 	DeleteGroup(context.Context, *DeleteGroupRequest) (*StatusResponse, error)
-	SetGroupRooms(context.Context, *SetGroupRoomsRequest) (*StatusResponse, error)
+	SetGroupSatellites(context.Context, *SetGroupSatellitesRequest) (*StatusResponse, error)
 	// --- Triggers (Admin-UI, #28) ---
 	GetTriggers(context.Context, *Empty) (*GetTriggersResponse, error)
 	CreateTrigger(context.Context, *CreateTriggerRequest) (*StatusResponse, error)
@@ -1212,8 +1212,8 @@ func (UnimplementedHannahServiceServer) UpdateGroup(context.Context, *UpdateGrou
 func (UnimplementedHannahServiceServer) DeleteGroup(context.Context, *DeleteGroupRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteGroup not implemented")
 }
-func (UnimplementedHannahServiceServer) SetGroupRooms(context.Context, *SetGroupRoomsRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetGroupRooms not implemented")
+func (UnimplementedHannahServiceServer) SetGroupSatellites(context.Context, *SetGroupSatellitesRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetGroupSatellites not implemented")
 }
 func (UnimplementedHannahServiceServer) GetTriggers(context.Context, *Empty) (*GetTriggersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTriggers not implemented")
@@ -1872,20 +1872,20 @@ func _HannahService_DeleteGroup_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HannahService_SetGroupRooms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetGroupRoomsRequest)
+func _HannahService_SetGroupSatellites_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetGroupSatellitesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HannahServiceServer).SetGroupRooms(ctx, in)
+		return srv.(HannahServiceServer).SetGroupSatellites(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: HannahService_SetGroupRooms_FullMethodName,
+		FullMethod: HannahService_SetGroupSatellites_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HannahServiceServer).SetGroupRooms(ctx, req.(*SetGroupRoomsRequest))
+		return srv.(HannahServiceServer).SetGroupSatellites(ctx, req.(*SetGroupSatellitesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2640,8 +2640,8 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HannahService_DeleteGroup_Handler,
 		},
 		{
-			MethodName: "SetGroupRooms",
-			Handler:    _HannahService_SetGroupRooms_Handler,
+			MethodName: "SetGroupSatellites",
+			Handler:    _HannahService_SetGroupSatellites_Handler,
 		},
 		{
 			MethodName: "GetTriggers",
