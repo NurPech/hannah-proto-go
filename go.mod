@@ -1,4 +1,4 @@
-module github.com/NurPech/hannah-proto-go
+module github.com/NurPech/hannah-proto-go/v2
 
 go 1.25.0
 
