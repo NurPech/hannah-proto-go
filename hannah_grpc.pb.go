@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: hannah.proto
+// source: hannah/hannah.proto
 
 package hannahproto
 
@@ -2808,5 +2808,5 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "hannah.proto",
+	Metadata: "hannah/hannah.proto",
 }
