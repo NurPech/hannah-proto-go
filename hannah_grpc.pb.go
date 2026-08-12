@@ -87,6 +87,8 @@ const (
 	HannahService_DeleteTimer_FullMethodName                   = "/hannah.HannahService/DeleteTimer"
 	HannahService_AgentConnect_FullMethodName                  = "/hannah.HannahService/AgentConnect"
 	HannahService_AutomationConnect_FullMethodName             = "/hannah.HannahService/AutomationConnect"
+	HannahService_ListActivityLog_FullMethodName               = "/hannah.HannahService/ListActivityLog"
+	HannahService_StreamActivityAudio_FullMethodName           = "/hannah.HannahService/StreamActivityAudio"
 )
 
 // HannahServiceClient is the client API for HannahService service.
@@ -242,6 +244,13 @@ type HannahServiceClient interface {
 	// Chosen over SubscribeEvents so a reconnecting service always gets a fresh snapshot
 	// instead of missing state changes that happened while it was offline.
 	AutomationConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AutomationMessage, AutomationCommand], error)
+	// --- Activity Log ---
+	// Read access to the Activity Log (#220) for external consumers (WebUI). List returns
+	// full entry detail inline (transcript, intent + intent_meta, answer text) with
+	// cursor-based pagination; audio is fetched separately, decoded server-side from the
+	// stored WAV and streamed as raw PCM chunks.
+	ListActivityLog(ctx context.Context, in *ListActivityLogRequest, opts ...grpc.CallOption) (*ListActivityLogResponse, error)
+	StreamActivityAudio(ctx context.Context, in *StreamActivityAudioRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ActivityAudioChunk], error)
 }
 
 type hannahServiceClient struct {
@@ -962,6 +971,35 @@ func (c *hannahServiceClient) AutomationConnect(ctx context.Context, opts ...grp
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_AutomationConnectClient = grpc.BidiStreamingClient[AutomationMessage, AutomationCommand]
 
+func (c *hannahServiceClient) ListActivityLog(ctx context.Context, in *ListActivityLogRequest, opts ...grpc.CallOption) (*ListActivityLogResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListActivityLogResponse)
+	err := c.cc.Invoke(ctx, HannahService_ListActivityLog_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) StreamActivityAudio(ctx context.Context, in *StreamActivityAudioRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ActivityAudioChunk], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[6], HannahService_StreamActivityAudio_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[StreamActivityAudioRequest, ActivityAudioChunk]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_StreamActivityAudioClient = grpc.ServerStreamingClient[ActivityAudioChunk]
+
 // HannahServiceServer is the server API for HannahService service.
 // All implementations must embed UnimplementedHannahServiceServer
 // for forward compatibility.
@@ -1115,6 +1153,13 @@ type HannahServiceServer interface {
 	// Chosen over SubscribeEvents so a reconnecting service always gets a fresh snapshot
 	// instead of missing state changes that happened while it was offline.
 	AutomationConnect(grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]) error
+	// --- Activity Log ---
+	// Read access to the Activity Log (#220) for external consumers (WebUI). List returns
+	// full entry detail inline (transcript, intent + intent_meta, answer text) with
+	// cursor-based pagination; audio is fetched separately, decoded server-side from the
+	// stored WAV and streamed as raw PCM chunks.
+	ListActivityLog(context.Context, *ListActivityLogRequest) (*ListActivityLogResponse, error)
+	StreamActivityAudio(*StreamActivityAudioRequest, grpc.ServerStreamingServer[ActivityAudioChunk]) error
 	mustEmbedUnimplementedHannahServiceServer()
 }
 
@@ -1328,6 +1373,12 @@ func (UnimplementedHannahServiceServer) AgentConnect(grpc.BidiStreamingServer[Ag
 }
 func (UnimplementedHannahServiceServer) AutomationConnect(grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]) error {
 	return status.Errorf(codes.Unimplemented, "method AutomationConnect not implemented")
+}
+func (UnimplementedHannahServiceServer) ListActivityLog(context.Context, *ListActivityLogRequest) (*ListActivityLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListActivityLog not implemented")
+}
+func (UnimplementedHannahServiceServer) StreamActivityAudio(*StreamActivityAudioRequest, grpc.ServerStreamingServer[ActivityAudioChunk]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamActivityAudio not implemented")
 }
 func (UnimplementedHannahServiceServer) mustEmbedUnimplementedHannahServiceServer() {}
 func (UnimplementedHannahServiceServer) testEmbeddedByValue()                       {}
@@ -2516,6 +2567,35 @@ func _HannahService_AutomationConnect_Handler(srv interface{}, stream grpc.Serve
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_AutomationConnectServer = grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]
 
+func _HannahService_ListActivityLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListActivityLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).ListActivityLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_ListActivityLog_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).ListActivityLog(ctx, req.(*ListActivityLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_StreamActivityAudio_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StreamActivityAudioRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HannahServiceServer).StreamActivityAudio(m, &grpc.GenericServerStream[StreamActivityAudioRequest, ActivityAudioChunk]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_StreamActivityAudioServer = grpc.ServerStreamingServer[ActivityAudioChunk]
+
 // HannahService_ServiceDesc is the grpc.ServiceDesc for HannahService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2771,6 +2851,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "DeleteTimer",
 			Handler:    _HannahService_DeleteTimer_Handler,
 		},
+		{
+			MethodName: "ListActivityLog",
+			Handler:    _HannahService_ListActivityLog_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
@@ -2806,6 +2890,11 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 			Handler:       _HannahService_AutomationConnect_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "StreamActivityAudio",
+			Handler:       _HannahService_StreamActivityAudio_Handler,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "hannah/hannah.proto",
