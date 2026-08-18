@@ -91,6 +91,9 @@ const (
 	HannahService_AutomationConnect_FullMethodName             = "/hannah.HannahService/AutomationConnect"
 	HannahService_ListActivityLog_FullMethodName               = "/hannah.HannahService/ListActivityLog"
 	HannahService_StreamActivityAudio_FullMethodName           = "/hannah.HannahService/StreamActivityAudio"
+	HannahService_CreateMessage_FullMethodName                 = "/hannah.HannahService/CreateMessage"
+	HannahService_ListMessages_FullMethodName                  = "/hannah.HannahService/ListMessages"
+	HannahService_DeleteMessage_FullMethodName                 = "/hannah.HannahService/DeleteMessage"
 )
 
 // HannahServiceClient is the client API for HannahService service.
@@ -261,6 +264,10 @@ type HannahServiceClient interface {
 	// stored WAV and streamed as raw PCM chunks.
 	ListActivityLog(ctx context.Context, in *ListActivityLogRequest, opts ...grpc.CallOption) (*ListActivityLogResponse, error)
 	StreamActivityAudio(ctx context.Context, in *StreamActivityAudioRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ActivityAudioChunk], error)
+	// --- Messages (passive per-user mailbox, third notification type) ---
+	CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	ListMessages(ctx context.Context, in *ListMessagesRequest, opts ...grpc.CallOption) (*ListMessagesResponse, error)
+	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type hannahServiceClient struct {
@@ -1033,6 +1040,36 @@ func (c *hannahServiceClient) StreamActivityAudio(ctx context.Context, in *Strea
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_StreamActivityAudioClient = grpc.ServerStreamingClient[ActivityAudioChunk]
 
+func (c *hannahServiceClient) CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_CreateMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) ListMessages(ctx context.Context, in *ListMessagesRequest, opts ...grpc.CallOption) (*ListMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMessagesResponse)
+	err := c.cc.Invoke(ctx, HannahService_ListMessages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_DeleteMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HannahServiceServer is the server API for HannahService service.
 // All implementations must embed UnimplementedHannahServiceServer
 // for forward compatibility.
@@ -1201,6 +1238,10 @@ type HannahServiceServer interface {
 	// stored WAV and streamed as raw PCM chunks.
 	ListActivityLog(context.Context, *ListActivityLogRequest) (*ListActivityLogResponse, error)
 	StreamActivityAudio(*StreamActivityAudioRequest, grpc.ServerStreamingServer[ActivityAudioChunk]) error
+	// --- Messages (passive per-user mailbox, third notification type) ---
+	CreateMessage(context.Context, *CreateMessageRequest) (*StatusResponse, error)
+	ListMessages(context.Context, *ListMessagesRequest) (*ListMessagesResponse, error)
+	DeleteMessage(context.Context, *DeleteMessageRequest) (*StatusResponse, error)
 	mustEmbedUnimplementedHannahServiceServer()
 }
 
@@ -1426,6 +1467,15 @@ func (UnimplementedHannahServiceServer) ListActivityLog(context.Context, *ListAc
 }
 func (UnimplementedHannahServiceServer) StreamActivityAudio(*StreamActivityAudioRequest, grpc.ServerStreamingServer[ActivityAudioChunk]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamActivityAudio not implemented")
+}
+func (UnimplementedHannahServiceServer) CreateMessage(context.Context, *CreateMessageRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMessage not implemented")
+}
+func (UnimplementedHannahServiceServer) ListMessages(context.Context, *ListMessagesRequest) (*ListMessagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMessages not implemented")
+}
+func (UnimplementedHannahServiceServer) DeleteMessage(context.Context, *DeleteMessageRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMessage not implemented")
 }
 func (UnimplementedHannahServiceServer) mustEmbedUnimplementedHannahServiceServer() {}
 func (UnimplementedHannahServiceServer) testEmbeddedByValue()                       {}
@@ -2668,6 +2718,60 @@ func _HannahService_StreamActivityAudio_Handler(srv interface{}, stream grpc.Ser
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_StreamActivityAudioServer = grpc.ServerStreamingServer[ActivityAudioChunk]
 
+func _HannahService_CreateMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).CreateMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_CreateMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).CreateMessage(ctx, req.(*CreateMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_ListMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMessagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).ListMessages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_ListMessages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).ListMessages(ctx, req.(*ListMessagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_DeleteMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).DeleteMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_DeleteMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).DeleteMessage(ctx, req.(*DeleteMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HannahService_ServiceDesc is the grpc.ServiceDesc for HannahService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2930,6 +3034,18 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListActivityLog",
 			Handler:    _HannahService_ListActivityLog_Handler,
+		},
+		{
+			MethodName: "CreateMessage",
+			Handler:    _HannahService_CreateMessage_Handler,
+		},
+		{
+			MethodName: "ListMessages",
+			Handler:    _HannahService_ListMessages_Handler,
+		},
+		{
+			MethodName: "DeleteMessage",
+			Handler:    _HannahService_DeleteMessage_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
