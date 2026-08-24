@@ -79,7 +79,6 @@ type AgentMessage struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Payload:
-	//
 	//	*AgentMessage_StateUpdate
 	//	*AgentMessage_ResidentUpdate
 	//	*AgentMessage_TextCommand
@@ -266,7 +265,6 @@ type AgentSatelliteControl struct {
 	Room     string `protobuf:"bytes,1,opt,name=room,proto3" json:"room,omitempty"`
 	DeviceId string `protobuf:"bytes,7,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"` // optional: target a specific satellite instead of the whole room
 	// Types that are assignable to Control:
-	//
 	//	*AgentSatelliteControl_Dnd
 	//	*AgentSatelliteControl_Mute
 	//	*AgentSatelliteControl_Volume
@@ -619,7 +617,6 @@ type AgentCommand struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Command:
-	//
 	//	*AgentCommand_SetState
 	//	*AgentCommand_WatchMore
 	//	*AgentCommand_SetResident

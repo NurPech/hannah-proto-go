@@ -394,7 +394,6 @@ type SampleType struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Payload:
-	//
 	//	*SampleType_Noise
 	//	*SampleType_HeyHannah
 	Payload isSampleType_Payload `protobuf_oneof:"payload"`
@@ -552,7 +551,6 @@ type CollectorMessage struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Payload:
-	//
 	//	*CollectorMessage_Ack
 	Payload isCollectorMessage_Payload `protobuf_oneof:"payload"`
 }

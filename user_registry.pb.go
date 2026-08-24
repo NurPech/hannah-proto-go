@@ -243,7 +243,6 @@ type GetUserRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Lookup:
-	//
 	//	*GetUserRequest_UserName
 	//	*GetUserRequest_Id
 	//	*GetUserRequest_LinkedAccount

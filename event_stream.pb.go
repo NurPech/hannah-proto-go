@@ -76,7 +76,6 @@ type HannahEvent struct {
 	EventType string `protobuf:"bytes,1,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"` // "car.parked" | "resident.arrived" | "resident.departed" | "system.notification" | "satellite.firmware"
 	Timestamp string `protobuf:"bytes,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                  // ISO 8601 UTC
 	// Types that are assignable to Payload:
-	//
 	//	*HannahEvent_CarState
 	//	*HannahEvent_ResidentEvent
 	//	*HannahEvent_SystemNotification

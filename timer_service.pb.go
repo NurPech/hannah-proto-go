@@ -27,7 +27,6 @@ type TimerCommand struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Command:
-	//
 	//	*TimerCommand_Create
 	//	*TimerCommand_Cancel
 	//	*TimerCommand_List
@@ -401,7 +400,6 @@ type TimerMessage struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Payload:
-	//
 	//	*TimerMessage_Ack
 	//	*TimerMessage_Fired
 	//	*TimerMessage_List

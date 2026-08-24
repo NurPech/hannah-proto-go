@@ -27,7 +27,6 @@ type AutomationMessage struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Payload:
-	//
 	//	*AutomationMessage_Register
 	Payload isAutomationMessage_Payload `protobuf_oneof:"payload"`
 }
@@ -143,7 +142,6 @@ type AutomationCommand struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Command:
-	//
 	//	*AutomationCommand_Snapshot
 	//	*AutomationCommand_StateChanged
 	Command isAutomationCommand_Command `protobuf_oneof:"command"`
