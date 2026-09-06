@@ -83,6 +83,7 @@ const (
 	HannahService_NotifySatelliteRegistered_FullMethodName     = "/hannah.HannahService/NotifySatelliteRegistered"
 	HannahService_NotifySatelliteGone_FullMethodName           = "/hannah.HannahService/NotifySatelliteGone"
 	HannahService_ProvisionSatellite_FullMethodName            = "/hannah.HannahService/ProvisionSatellite"
+	HannahService_StartVoiceEnrollment_FullMethodName          = "/hannah.HannahService/StartVoiceEnrollment"
 	HannahService_EnrollVoiceprint_FullMethodName              = "/hannah.HannahService/EnrollVoiceprint"
 	HannahService_TimerConnect_FullMethodName                  = "/hannah.HannahService/TimerConnect"
 	HannahService_GetTimers_FullMethodName                     = "/hannah.HannahService/GetTimers"
@@ -232,6 +233,11 @@ type HannahServiceClient interface {
 	// When the satellite first connects with that seed, Hannah links serial → pre-config and clears the seed.
 	ProvisionSatellite(ctx context.Context, in *ProvisionSatelliteRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Speaker Enrollment ---
+	// Trigger a guided voice-enrollment dialog for user_id at satellite_id (hannah#8);
+	// Core orchestrates the dialog itself. EnrollVoiceprint stays available as the
+	// low-level "store one already-captured sample" call — kept for now (additive,
+	// no hard cut) until hannah#8 confirms Core no longer needs it as an external RPC.
+	StartVoiceEnrollment(ctx context.Context, in *StartVoiceEnrollmentRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	EnrollVoiceprint(ctx context.Context, in *EnrollVoiceprintRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Timer Service ---
 	// Bidirectional stream between the Hannah Timer Service and Hannah Core.
@@ -942,6 +948,16 @@ func (c *hannahServiceClient) ProvisionSatellite(ctx context.Context, in *Provis
 	return out, nil
 }
 
+func (c *hannahServiceClient) StartVoiceEnrollment(ctx context.Context, in *StartVoiceEnrollmentRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_StartVoiceEnrollment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *hannahServiceClient) EnrollVoiceprint(ctx context.Context, in *EnrollVoiceprintRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
@@ -1206,6 +1222,11 @@ type HannahServiceServer interface {
 	// When the satellite first connects with that seed, Hannah links serial → pre-config and clears the seed.
 	ProvisionSatellite(context.Context, *ProvisionSatelliteRequest) (*StatusResponse, error)
 	// --- Speaker Enrollment ---
+	// Trigger a guided voice-enrollment dialog for user_id at satellite_id (hannah#8);
+	// Core orchestrates the dialog itself. EnrollVoiceprint stays available as the
+	// low-level "store one already-captured sample" call — kept for now (additive,
+	// no hard cut) until hannah#8 confirms Core no longer needs it as an external RPC.
+	StartVoiceEnrollment(context.Context, *StartVoiceEnrollmentRequest) (*StatusResponse, error)
 	EnrollVoiceprint(context.Context, *EnrollVoiceprintRequest) (*StatusResponse, error)
 	// --- Timer Service ---
 	// Bidirectional stream between the Hannah Timer Service and Hannah Core.
@@ -1443,6 +1464,9 @@ func (UnimplementedHannahServiceServer) NotifySatelliteGone(context.Context, *Sa
 }
 func (UnimplementedHannahServiceServer) ProvisionSatellite(context.Context, *ProvisionSatelliteRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProvisionSatellite not implemented")
+}
+func (UnimplementedHannahServiceServer) StartVoiceEnrollment(context.Context, *StartVoiceEnrollmentRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartVoiceEnrollment not implemented")
 }
 func (UnimplementedHannahServiceServer) EnrollVoiceprint(context.Context, *EnrollVoiceprintRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnrollVoiceprint not implemented")
@@ -2614,6 +2638,24 @@ func _HannahService_ProvisionSatellite_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HannahService_StartVoiceEnrollment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartVoiceEnrollmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).StartVoiceEnrollment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_StartVoiceEnrollment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).StartVoiceEnrollment(ctx, req.(*StartVoiceEnrollmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _HannahService_EnrollVoiceprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EnrollVoiceprintRequest)
 	if err := dec(in); err != nil {
@@ -3018,6 +3060,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProvisionSatellite",
 			Handler:    _HannahService_ProvisionSatellite_Handler,
+		},
+		{
+			MethodName: "StartVoiceEnrollment",
+			Handler:    _HannahService_StartVoiceEnrollment_Handler,
 		},
 		{
 			MethodName: "EnrollVoiceprint",
