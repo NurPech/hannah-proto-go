@@ -1,3 +1,3 @@
 package hannahproto
 
-const ProtoVersion = 7
+const ProtoVersion = 9
