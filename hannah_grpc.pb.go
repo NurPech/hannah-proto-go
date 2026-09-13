@@ -63,6 +63,10 @@ const (
 	HannahService_CreateBleTag_FullMethodName                  = "/hannah.HannahService/CreateBleTag"
 	HannahService_UpdateBleTag_FullMethodName                  = "/hannah.HannahService/UpdateBleTag"
 	HannahService_DeleteBleTag_FullMethodName                  = "/hannah.HannahService/DeleteBleTag"
+	HannahService_GetPresenceSources_FullMethodName            = "/hannah.HannahService/GetPresenceSources"
+	HannahService_CreatePresenceSource_FullMethodName          = "/hannah.HannahService/CreatePresenceSource"
+	HannahService_UpdatePresenceSource_FullMethodName          = "/hannah.HannahService/UpdatePresenceSource"
+	HannahService_DeletePresenceSource_FullMethodName          = "/hannah.HannahService/DeletePresenceSource"
 	HannahService_GetCars_FullMethodName                       = "/hannah.HannahService/GetCars"
 	HannahService_CreateCar_FullMethodName                     = "/hannah.HannahService/CreateCar"
 	HannahService_UpdateCar_FullMethodName                     = "/hannah.HannahService/UpdateCar"
@@ -173,6 +177,11 @@ type HannahServiceClient interface {
 	CreateBleTag(ctx context.Context, in *CreateBleTagRequest, opts ...grpc.CallOption) (*CreateBleTagResponse, error)
 	UpdateBleTag(ctx context.Context, in *UpdateBleTagRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeleteBleTag(ctx context.Context, in *DeleteBleTagRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// --- Presence Sources (Admin-UI, hannah#294 — presence fusion) ---
+	GetPresenceSources(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetPresenceSourcesResponse, error)
+	CreatePresenceSource(ctx context.Context, in *CreatePresenceSourceRequest, opts ...grpc.CallOption) (*CreatePresenceSourceResponse, error)
+	UpdatePresenceSource(ctx context.Context, in *UpdatePresenceSourceRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	DeletePresenceSource(ctx context.Context, in *DeletePresenceSourceRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Cars (Admin-UI, #115 — eigenes Modell + user_to_car-Pivot statt Settings-JSON-Blob) ---
 	GetCars(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetCarsResponse, error)
 	CreateCar(ctx context.Context, in *CreateCarRequest, opts ...grpc.CallOption) (*CreateCarResponse, error)
@@ -724,6 +733,46 @@ func (c *hannahServiceClient) DeleteBleTag(ctx context.Context, in *DeleteBleTag
 	return out, nil
 }
 
+func (c *hannahServiceClient) GetPresenceSources(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetPresenceSourcesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPresenceSourcesResponse)
+	err := c.cc.Invoke(ctx, HannahService_GetPresenceSources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) CreatePresenceSource(ctx context.Context, in *CreatePresenceSourceRequest, opts ...grpc.CallOption) (*CreatePresenceSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePresenceSourceResponse)
+	err := c.cc.Invoke(ctx, HannahService_CreatePresenceSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) UpdatePresenceSource(ctx context.Context, in *UpdatePresenceSourceRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_UpdatePresenceSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) DeletePresenceSource(ctx context.Context, in *DeletePresenceSourceRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_DeletePresenceSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *hannahServiceClient) GetCars(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetCarsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetCarsResponse)
@@ -1162,6 +1211,11 @@ type HannahServiceServer interface {
 	CreateBleTag(context.Context, *CreateBleTagRequest) (*CreateBleTagResponse, error)
 	UpdateBleTag(context.Context, *UpdateBleTagRequest) (*StatusResponse, error)
 	DeleteBleTag(context.Context, *DeleteBleTagRequest) (*StatusResponse, error)
+	// --- Presence Sources (Admin-UI, hannah#294 — presence fusion) ---
+	GetPresenceSources(context.Context, *Empty) (*GetPresenceSourcesResponse, error)
+	CreatePresenceSource(context.Context, *CreatePresenceSourceRequest) (*CreatePresenceSourceResponse, error)
+	UpdatePresenceSource(context.Context, *UpdatePresenceSourceRequest) (*StatusResponse, error)
+	DeletePresenceSource(context.Context, *DeletePresenceSourceRequest) (*StatusResponse, error)
 	// --- Cars (Admin-UI, #115 — eigenes Modell + user_to_car-Pivot statt Settings-JSON-Blob) ---
 	GetCars(context.Context, *Empty) (*GetCarsResponse, error)
 	CreateCar(context.Context, *CreateCarRequest) (*CreateCarResponse, error)
@@ -1404,6 +1458,18 @@ func (UnimplementedHannahServiceServer) UpdateBleTag(context.Context, *UpdateBle
 }
 func (UnimplementedHannahServiceServer) DeleteBleTag(context.Context, *DeleteBleTagRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteBleTag not implemented")
+}
+func (UnimplementedHannahServiceServer) GetPresenceSources(context.Context, *Empty) (*GetPresenceSourcesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPresenceSources not implemented")
+}
+func (UnimplementedHannahServiceServer) CreatePresenceSource(context.Context, *CreatePresenceSourceRequest) (*CreatePresenceSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePresenceSource not implemented")
+}
+func (UnimplementedHannahServiceServer) UpdatePresenceSource(context.Context, *UpdatePresenceSourceRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePresenceSource not implemented")
+}
+func (UnimplementedHannahServiceServer) DeletePresenceSource(context.Context, *DeletePresenceSourceRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePresenceSource not implemented")
 }
 func (UnimplementedHannahServiceServer) GetCars(context.Context, *Empty) (*GetCarsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCars not implemented")
@@ -2314,6 +2380,78 @@ func _HannahService_DeleteBleTag_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HannahService_GetPresenceSources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).GetPresenceSources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_GetPresenceSources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).GetPresenceSources(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_CreatePresenceSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePresenceSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).CreatePresenceSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_CreatePresenceSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).CreatePresenceSource(ctx, req.(*CreatePresenceSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_UpdatePresenceSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePresenceSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).UpdatePresenceSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_UpdatePresenceSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).UpdatePresenceSource(ctx, req.(*UpdatePresenceSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_DeletePresenceSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePresenceSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).DeletePresenceSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_DeletePresenceSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).DeletePresenceSource(ctx, req.(*DeletePresenceSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _HannahService_GetCars_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
@@ -2996,6 +3134,22 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteBleTag",
 			Handler:    _HannahService_DeleteBleTag_Handler,
+		},
+		{
+			MethodName: "GetPresenceSources",
+			Handler:    _HannahService_GetPresenceSources_Handler,
+		},
+		{
+			MethodName: "CreatePresenceSource",
+			Handler:    _HannahService_CreatePresenceSource_Handler,
+		},
+		{
+			MethodName: "UpdatePresenceSource",
+			Handler:    _HannahService_UpdatePresenceSource_Handler,
+		},
+		{
+			MethodName: "DeletePresenceSource",
+			Handler:    _HannahService_DeletePresenceSource_Handler,
 		},
 		{
 			MethodName: "GetCars",
