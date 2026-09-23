@@ -97,6 +97,8 @@ const (
 	HannahService_AutomationConnect_FullMethodName             = "/hannah.HannahService/AutomationConnect"
 	HannahService_ChannelConnect_FullMethodName                = "/hannah.HannahService/ChannelConnect"
 	HannahService_GetChannels_FullMethodName                   = "/hannah.HannahService/GetChannels"
+	HannahService_SubscribeInfrastructure_FullMethodName       = "/hannah.HannahService/SubscribeInfrastructure"
+	HannahService_LogCollectorConnect_FullMethodName           = "/hannah.HannahService/LogCollectorConnect"
 	HannahService_ListActivityLog_FullMethodName               = "/hannah.HannahService/ListActivityLog"
 	HannahService_StreamActivityAudio_FullMethodName           = "/hannah.HannahService/StreamActivityAudio"
 	HannahService_CreateMessage_FullMethodName                 = "/hannah.HannahService/CreateMessage"
@@ -286,6 +288,16 @@ type HannahServiceClient interface {
 	ChannelConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChannelMessage, ChannelCommand], error)
 	// Currently connected channel adapters and whether they support account linking.
 	GetChannels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetChannelsResponse, error)
+	// --- Infrastructure ---
+	// Service discovery for components: Hannah sends an InfrastructureSnapshot of all
+	// currently available infrastructure services (e.g. the log collector) right after
+	// subscribing, followed by ServiceAvailable/ServiceUnavailable deltas.
+	SubscribeInfrastructure(ctx context.Context, in *InfrastructureFilter, opts ...grpc.CallOption) (grpc.ServerStreamingClient[InfrastructureMessage], error)
+	// Bidirectional stream for the log collector. The collector sends a LogCollectorRegister
+	// and keeps the stream open; it counts as available exactly as long as the stream is
+	// open, and a second registration for the same instance replaces the first (same
+	// semantics as ChannelConnect). Not related to CollectorConnect (wakeword capture).
+	LogCollectorConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[LogCollectorMessage, LogCollectorCommand], error)
 	// --- Activity Log ---
 	// Read access to the Activity Log (#220) for external consumers (WebUI). List returns
 	// full entry detail inline (transcript, intent + intent_meta, answer text) with
@@ -1123,6 +1135,38 @@ func (c *hannahServiceClient) GetChannels(ctx context.Context, in *Empty, opts .
 	return out, nil
 }
 
+func (c *hannahServiceClient) SubscribeInfrastructure(ctx context.Context, in *InfrastructureFilter, opts ...grpc.CallOption) (grpc.ServerStreamingClient[InfrastructureMessage], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[8], HannahService_SubscribeInfrastructure_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[InfrastructureFilter, InfrastructureMessage]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_SubscribeInfrastructureClient = grpc.ServerStreamingClient[InfrastructureMessage]
+
+func (c *hannahServiceClient) LogCollectorConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[LogCollectorMessage, LogCollectorCommand], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[9], HannahService_LogCollectorConnect_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[LogCollectorMessage, LogCollectorCommand]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_LogCollectorConnectClient = grpc.BidiStreamingClient[LogCollectorMessage, LogCollectorCommand]
+
 func (c *hannahServiceClient) ListActivityLog(ctx context.Context, in *ListActivityLogRequest, opts ...grpc.CallOption) (*ListActivityLogResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListActivityLogResponse)
@@ -1135,7 +1179,7 @@ func (c *hannahServiceClient) ListActivityLog(ctx context.Context, in *ListActiv
 
 func (c *hannahServiceClient) StreamActivityAudio(ctx context.Context, in *StreamActivityAudioRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ActivityAudioChunk], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[8], HannahService_StreamActivityAudio_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[10], HannahService_StreamActivityAudio_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1364,6 +1408,16 @@ type HannahServiceServer interface {
 	ChannelConnect(grpc.BidiStreamingServer[ChannelMessage, ChannelCommand]) error
 	// Currently connected channel adapters and whether they support account linking.
 	GetChannels(context.Context, *Empty) (*GetChannelsResponse, error)
+	// --- Infrastructure ---
+	// Service discovery for components: Hannah sends an InfrastructureSnapshot of all
+	// currently available infrastructure services (e.g. the log collector) right after
+	// subscribing, followed by ServiceAvailable/ServiceUnavailable deltas.
+	SubscribeInfrastructure(*InfrastructureFilter, grpc.ServerStreamingServer[InfrastructureMessage]) error
+	// Bidirectional stream for the log collector. The collector sends a LogCollectorRegister
+	// and keeps the stream open; it counts as available exactly as long as the stream is
+	// open, and a second registration for the same instance replaces the first (same
+	// semantics as ChannelConnect). Not related to CollectorConnect (wakeword capture).
+	LogCollectorConnect(grpc.BidiStreamingServer[LogCollectorMessage, LogCollectorCommand]) error
 	// --- Activity Log ---
 	// Read access to the Activity Log (#220) for external consumers (WebUI). List returns
 	// full entry detail inline (transcript, intent + intent_meta, answer text) with
@@ -1618,6 +1672,12 @@ func (UnimplementedHannahServiceServer) ChannelConnect(grpc.BidiStreamingServer[
 }
 func (UnimplementedHannahServiceServer) GetChannels(context.Context, *Empty) (*GetChannelsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChannels not implemented")
+}
+func (UnimplementedHannahServiceServer) SubscribeInfrastructure(*InfrastructureFilter, grpc.ServerStreamingServer[InfrastructureMessage]) error {
+	return status.Errorf(codes.Unimplemented, "method SubscribeInfrastructure not implemented")
+}
+func (UnimplementedHannahServiceServer) LogCollectorConnect(grpc.BidiStreamingServer[LogCollectorMessage, LogCollectorCommand]) error {
+	return status.Errorf(codes.Unimplemented, "method LogCollectorConnect not implemented")
 }
 func (UnimplementedHannahServiceServer) ListActivityLog(context.Context, *ListActivityLogRequest) (*ListActivityLogResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListActivityLog not implemented")
@@ -2979,6 +3039,24 @@ func _HannahService_GetChannels_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HannahService_SubscribeInfrastructure_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(InfrastructureFilter)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HannahServiceServer).SubscribeInfrastructure(m, &grpc.GenericServerStream[InfrastructureFilter, InfrastructureMessage]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_SubscribeInfrastructureServer = grpc.ServerStreamingServer[InfrastructureMessage]
+
+func _HannahService_LogCollectorConnect_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HannahServiceServer).LogCollectorConnect(&grpc.GenericServerStream[LogCollectorMessage, LogCollectorCommand]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_LogCollectorConnectServer = grpc.BidiStreamingServer[LogCollectorMessage, LogCollectorCommand]
+
 func _HannahService_ListActivityLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListActivityLogRequest)
 	if err := dec(in); err != nil {
@@ -3410,6 +3488,17 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "ChannelConnect",
 			Handler:       _HannahService_ChannelConnect_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "SubscribeInfrastructure",
+			Handler:       _HannahService_SubscribeInfrastructure_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "LogCollectorConnect",
+			Handler:       _HannahService_LogCollectorConnect_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
