@@ -23,6 +23,7 @@ const (
 	HannahService_GetUser_FullMethodName                       = "/hannah.HannahService/GetUser"
 	HannahService_LinkAccount_FullMethodName                   = "/hannah.HannahService/LinkAccount"
 	HannahService_UnlinkAccount_FullMethodName                 = "/hannah.HannahService/UnlinkAccount"
+	HannahService_CreateLinkToken_FullMethodName               = "/hannah.HannahService/CreateLinkToken"
 	HannahService_SetTrustLevel_FullMethodName                 = "/hannah.HannahService/SetTrustLevel"
 	HannahService_SetSystemMessages_FullMethodName             = "/hannah.HannahService/SetSystemMessages"
 	HannahService_SetAutomation_FullMethodName                 = "/hannah.HannahService/SetAutomation"
@@ -94,6 +95,8 @@ const (
 	HannahService_DeleteTimer_FullMethodName                   = "/hannah.HannahService/DeleteTimer"
 	HannahService_AgentConnect_FullMethodName                  = "/hannah.HannahService/AgentConnect"
 	HannahService_AutomationConnect_FullMethodName             = "/hannah.HannahService/AutomationConnect"
+	HannahService_ChannelConnect_FullMethodName                = "/hannah.HannahService/ChannelConnect"
+	HannahService_GetChannels_FullMethodName                   = "/hannah.HannahService/GetChannels"
 	HannahService_ListActivityLog_FullMethodName               = "/hannah.HannahService/ListActivityLog"
 	HannahService_StreamActivityAudio_FullMethodName           = "/hannah.HannahService/StreamActivityAudio"
 	HannahService_CreateMessage_FullMethodName                 = "/hannah.HannahService/CreateMessage"
@@ -110,6 +113,9 @@ type HannahServiceClient interface {
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	LinkAccount(ctx context.Context, in *LinkAccountRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	UnlinkAccount(ctx context.Context, in *UnlinkAccountRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// One-time token for linking an account via the service's adapter (e.g. Telegram deep link).
+	// Redeemed by the adapter over ChannelConnect.
+	CreateLinkToken(ctx context.Context, in *CreateLinkTokenRequest, opts ...grpc.CallOption) (*CreateLinkTokenResponse, error)
 	SetTrustLevel(ctx context.Context, in *SetTrustLevelRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	SetSystemMessages(ctx context.Context, in *SetSystemMessagesRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// Enable/disable an automation service (e.g. "telegram_autoresponder") for a user.
@@ -272,6 +278,14 @@ type HannahServiceClient interface {
 	// Chosen over SubscribeEvents so a reconnecting service always gets a fresh snapshot
 	// instead of missing state changes that happened while it was offline.
 	AutomationConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AutomationMessage, AutomationCommand], error)
+	// --- Channels ---
+	// Bidirectional stream for channel adapters (e.g. the Telegram service). The adapter
+	// sends a ChannelRegister and keeps the stream open; it counts as available exactly as
+	// long as the stream is open. A second registration for the same service replaces the
+	// first. Link tokens (CreateLinkToken) are redeemed over this stream.
+	ChannelConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChannelMessage, ChannelCommand], error)
+	// Currently connected channel adapters and whether they support account linking.
+	GetChannels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetChannelsResponse, error)
 	// --- Activity Log ---
 	// Read access to the Activity Log (#220) for external consumers (WebUI). List returns
 	// full entry detail inline (transcript, intent + intent_meta, answer text) with
@@ -327,6 +341,16 @@ func (c *hannahServiceClient) UnlinkAccount(ctx context.Context, in *UnlinkAccou
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, HannahService_UnlinkAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) CreateLinkToken(ctx context.Context, in *CreateLinkTokenRequest, opts ...grpc.CallOption) (*CreateLinkTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateLinkTokenResponse)
+	err := c.cc.Invoke(ctx, HannahService_CreateLinkToken_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1076,6 +1100,29 @@ func (c *hannahServiceClient) AutomationConnect(ctx context.Context, opts ...grp
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_AutomationConnectClient = grpc.BidiStreamingClient[AutomationMessage, AutomationCommand]
 
+func (c *hannahServiceClient) ChannelConnect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChannelMessage, ChannelCommand], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[7], HannahService_ChannelConnect_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[ChannelMessage, ChannelCommand]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_ChannelConnectClient = grpc.BidiStreamingClient[ChannelMessage, ChannelCommand]
+
+func (c *hannahServiceClient) GetChannels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetChannelsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChannelsResponse)
+	err := c.cc.Invoke(ctx, HannahService_GetChannels_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *hannahServiceClient) ListActivityLog(ctx context.Context, in *ListActivityLogRequest, opts ...grpc.CallOption) (*ListActivityLogResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListActivityLogResponse)
@@ -1088,7 +1135,7 @@ func (c *hannahServiceClient) ListActivityLog(ctx context.Context, in *ListActiv
 
 func (c *hannahServiceClient) StreamActivityAudio(ctx context.Context, in *StreamActivityAudioRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ActivityAudioChunk], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[7], HannahService_StreamActivityAudio_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &HannahService_ServiceDesc.Streams[8], HannahService_StreamActivityAudio_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1144,6 +1191,9 @@ type HannahServiceServer interface {
 	GetUser(context.Context, *GetUserRequest) (*UserResponse, error)
 	LinkAccount(context.Context, *LinkAccountRequest) (*StatusResponse, error)
 	UnlinkAccount(context.Context, *UnlinkAccountRequest) (*StatusResponse, error)
+	// One-time token for linking an account via the service's adapter (e.g. Telegram deep link).
+	// Redeemed by the adapter over ChannelConnect.
+	CreateLinkToken(context.Context, *CreateLinkTokenRequest) (*CreateLinkTokenResponse, error)
 	SetTrustLevel(context.Context, *SetTrustLevelRequest) (*StatusResponse, error)
 	SetSystemMessages(context.Context, *SetSystemMessagesRequest) (*StatusResponse, error)
 	// Enable/disable an automation service (e.g. "telegram_autoresponder") for a user.
@@ -1306,6 +1356,14 @@ type HannahServiceServer interface {
 	// Chosen over SubscribeEvents so a reconnecting service always gets a fresh snapshot
 	// instead of missing state changes that happened while it was offline.
 	AutomationConnect(grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]) error
+	// --- Channels ---
+	// Bidirectional stream for channel adapters (e.g. the Telegram service). The adapter
+	// sends a ChannelRegister and keeps the stream open; it counts as available exactly as
+	// long as the stream is open. A second registration for the same service replaces the
+	// first. Link tokens (CreateLinkToken) are redeemed over this stream.
+	ChannelConnect(grpc.BidiStreamingServer[ChannelMessage, ChannelCommand]) error
+	// Currently connected channel adapters and whether they support account linking.
+	GetChannels(context.Context, *Empty) (*GetChannelsResponse, error)
 	// --- Activity Log ---
 	// Read access to the Activity Log (#220) for external consumers (WebUI). List returns
 	// full entry detail inline (transcript, intent + intent_meta, answer text) with
@@ -1338,6 +1396,9 @@ func (UnimplementedHannahServiceServer) LinkAccount(context.Context, *LinkAccoun
 }
 func (UnimplementedHannahServiceServer) UnlinkAccount(context.Context, *UnlinkAccountRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnlinkAccount not implemented")
+}
+func (UnimplementedHannahServiceServer) CreateLinkToken(context.Context, *CreateLinkTokenRequest) (*CreateLinkTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateLinkToken not implemented")
 }
 func (UnimplementedHannahServiceServer) SetTrustLevel(context.Context, *SetTrustLevelRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetTrustLevel not implemented")
@@ -1552,6 +1613,12 @@ func (UnimplementedHannahServiceServer) AgentConnect(grpc.BidiStreamingServer[Ag
 func (UnimplementedHannahServiceServer) AutomationConnect(grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]) error {
 	return status.Errorf(codes.Unimplemented, "method AutomationConnect not implemented")
 }
+func (UnimplementedHannahServiceServer) ChannelConnect(grpc.BidiStreamingServer[ChannelMessage, ChannelCommand]) error {
+	return status.Errorf(codes.Unimplemented, "method ChannelConnect not implemented")
+}
+func (UnimplementedHannahServiceServer) GetChannels(context.Context, *Empty) (*GetChannelsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChannels not implemented")
+}
 func (UnimplementedHannahServiceServer) ListActivityLog(context.Context, *ListActivityLogRequest) (*ListActivityLogResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListActivityLog not implemented")
 }
@@ -1656,6 +1723,24 @@ func _HannahService_UnlinkAccount_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(HannahServiceServer).UnlinkAccount(ctx, req.(*UnlinkAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_CreateLinkToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateLinkTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).CreateLinkToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_CreateLinkToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).CreateLinkToken(ctx, req.(*CreateLinkTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2869,6 +2954,31 @@ func _HannahService_AutomationConnect_Handler(srv interface{}, stream grpc.Serve
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type HannahService_AutomationConnectServer = grpc.BidiStreamingServer[AutomationMessage, AutomationCommand]
 
+func _HannahService_ChannelConnect_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HannahServiceServer).ChannelConnect(&grpc.GenericServerStream[ChannelMessage, ChannelCommand]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HannahService_ChannelConnectServer = grpc.BidiStreamingServer[ChannelMessage, ChannelCommand]
+
+func _HannahService_GetChannels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).GetChannels(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_GetChannels_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).GetChannels(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _HannahService_ListActivityLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListActivityLogRequest)
 	if err := dec(in); err != nil {
@@ -2974,6 +3084,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnlinkAccount",
 			Handler:    _HannahService_UnlinkAccount_Handler,
+		},
+		{
+			MethodName: "CreateLinkToken",
+			Handler:    _HannahService_CreateLinkToken_Handler,
 		},
 		{
 			MethodName: "SetTrustLevel",
@@ -3232,6 +3346,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HannahService_DeleteTimer_Handler,
 		},
 		{
+			MethodName: "GetChannels",
+			Handler:    _HannahService_GetChannels_Handler,
+		},
+		{
 			MethodName: "ListActivityLog",
 			Handler:    _HannahService_ListActivityLog_Handler,
 		},
@@ -3286,6 +3404,12 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "AutomationConnect",
 			Handler:       _HannahService_AutomationConnect_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "ChannelConnect",
+			Handler:       _HannahService_ChannelConnect_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
