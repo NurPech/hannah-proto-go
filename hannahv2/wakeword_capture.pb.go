@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.34.2
 // 	protoc        (unknown)
-// source: hannah/wakeword_capture.proto
+// source: hannah/v2/wakeword_capture.proto
 
-package hannahproto
+package hannahv2
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -53,11 +53,11 @@ func (x CaptureMode) String() string {
 }
 
 func (CaptureMode) Descriptor() protoreflect.EnumDescriptor {
-	return file_hannah_wakeword_capture_proto_enumTypes[0].Descriptor()
+	return file_hannah_v2_wakeword_capture_proto_enumTypes[0].Descriptor()
 }
 
 func (CaptureMode) Type() protoreflect.EnumType {
-	return &file_hannah_wakeword_capture_proto_enumTypes[0]
+	return &file_hannah_v2_wakeword_capture_proto_enumTypes[0]
 }
 
 func (x CaptureMode) Number() protoreflect.EnumNumber {
@@ -66,7 +66,7 @@ func (x CaptureMode) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use CaptureMode.Descriptor instead.
 func (CaptureMode) EnumDescriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{0}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{0}
 }
 
 type SatelliteCaptureRequest struct {
@@ -84,7 +84,7 @@ type SatelliteCaptureRequest struct {
 func (x *SatelliteCaptureRequest) Reset() {
 	*x = SatelliteCaptureRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[0]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -97,7 +97,7 @@ func (x *SatelliteCaptureRequest) String() string {
 func (*SatelliteCaptureRequest) ProtoMessage() {}
 
 func (x *SatelliteCaptureRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[0]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -110,7 +110,7 @@ func (x *SatelliteCaptureRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SatelliteCaptureRequest.ProtoReflect.Descriptor instead.
 func (*SatelliteCaptureRequest) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{0}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *SatelliteCaptureRequest) GetDeviceId() string {
@@ -139,7 +139,7 @@ type TriggerPlinkRequest struct {
 func (x *TriggerPlinkRequest) Reset() {
 	*x = TriggerPlinkRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[1]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -152,7 +152,7 @@ func (x *TriggerPlinkRequest) String() string {
 func (*TriggerPlinkRequest) ProtoMessage() {}
 
 func (x *TriggerPlinkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[1]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -165,7 +165,7 @@ func (x *TriggerPlinkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerPlinkRequest.ProtoReflect.Descriptor instead.
 func (*TriggerPlinkRequest) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{1}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *TriggerPlinkRequest) GetDeviceId() string {
@@ -195,7 +195,7 @@ type SatelliteCaptureResponse struct {
 func (x *SatelliteCaptureResponse) Reset() {
 	*x = SatelliteCaptureResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[2]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -208,7 +208,7 @@ func (x *SatelliteCaptureResponse) String() string {
 func (*SatelliteCaptureResponse) ProtoMessage() {}
 
 func (x *SatelliteCaptureResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[2]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -221,7 +221,7 @@ func (x *SatelliteCaptureResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SatelliteCaptureResponse.ProtoReflect.Descriptor instead.
 func (*SatelliteCaptureResponse) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{2}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *SatelliteCaptureResponse) GetOk() bool {
@@ -254,7 +254,7 @@ type SatelliteAudioChunk struct {
 func (x *SatelliteAudioChunk) Reset() {
 	*x = SatelliteAudioChunk{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[3]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -267,7 +267,7 @@ func (x *SatelliteAudioChunk) String() string {
 func (*SatelliteAudioChunk) ProtoMessage() {}
 
 func (x *SatelliteAudioChunk) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[3]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -280,7 +280,7 @@ func (x *SatelliteAudioChunk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SatelliteAudioChunk.ProtoReflect.Descriptor instead.
 func (*SatelliteAudioChunk) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{3}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SatelliteAudioChunk) GetPcm() []byte {
@@ -315,14 +315,14 @@ type CaptureCommand struct {
 
 	DeviceId    string      `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
 	SampleType  *SampleType `protobuf:"bytes,2,opt,name=sample_type,json=sampleType,proto3" json:"sample_type,omitempty"`
-	CaptureMode CaptureMode `protobuf:"varint,3,opt,name=capture_mode,json=captureMode,proto3,enum=hannah.CaptureMode" json:"capture_mode,omitempty"`
+	CaptureMode CaptureMode `protobuf:"varint,3,opt,name=capture_mode,json=captureMode,proto3,enum=hannah.v2.CaptureMode" json:"capture_mode,omitempty"`
 	Stop        bool        `protobuf:"varint,4,opt,name=stop,proto3" json:"stop,omitempty"`
 }
 
 func (x *CaptureCommand) Reset() {
 	*x = CaptureCommand{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[4]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -335,7 +335,7 @@ func (x *CaptureCommand) String() string {
 func (*CaptureCommand) ProtoMessage() {}
 
 func (x *CaptureCommand) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[4]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,7 +348,7 @@ func (x *CaptureCommand) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CaptureCommand.ProtoReflect.Descriptor instead.
 func (*CaptureCommand) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{4}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CaptureCommand) GetDeviceId() string {
@@ -395,7 +395,7 @@ type SampleType struct {
 func (x *SampleType) Reset() {
 	*x = SampleType{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[5]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -408,7 +408,7 @@ func (x *SampleType) String() string {
 func (*SampleType) ProtoMessage() {}
 
 func (x *SampleType) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[5]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -421,7 +421,7 @@ func (x *SampleType) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SampleType.ProtoReflect.Descriptor instead.
 func (*SampleType) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{5}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{5}
 }
 
 func (m *SampleType) GetPayload() isSampleType_Payload {
@@ -470,7 +470,7 @@ type NoiseSample struct {
 func (x *NoiseSample) Reset() {
 	*x = NoiseSample{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[6]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -483,7 +483,7 @@ func (x *NoiseSample) String() string {
 func (*NoiseSample) ProtoMessage() {}
 
 func (x *NoiseSample) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[6]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -496,7 +496,7 @@ func (x *NoiseSample) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NoiseSample.ProtoReflect.Descriptor instead.
 func (*NoiseSample) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{6}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{6}
 }
 
 type HeyHannahSample struct {
@@ -508,7 +508,7 @@ type HeyHannahSample struct {
 func (x *HeyHannahSample) Reset() {
 	*x = HeyHannahSample{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[7]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -521,7 +521,7 @@ func (x *HeyHannahSample) String() string {
 func (*HeyHannahSample) ProtoMessage() {}
 
 func (x *HeyHannahSample) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[7]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -534,7 +534,7 @@ func (x *HeyHannahSample) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HeyHannahSample.ProtoReflect.Descriptor instead.
 func (*HeyHannahSample) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{7}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{7}
 }
 
 // Sent by the Collector over the CollectorConnect stream.
@@ -551,7 +551,7 @@ type CollectorMessage struct {
 func (x *CollectorMessage) Reset() {
 	*x = CollectorMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[8]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -564,7 +564,7 @@ func (x *CollectorMessage) String() string {
 func (*CollectorMessage) ProtoMessage() {}
 
 func (x *CollectorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[8]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -577,7 +577,7 @@ func (x *CollectorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectorMessage.ProtoReflect.Descriptor instead.
 func (*CollectorMessage) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{8}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{8}
 }
 
 func (m *CollectorMessage) GetPayload() isCollectorMessage_Payload {
@@ -616,7 +616,7 @@ type CollectorAck struct {
 func (x *CollectorAck) Reset() {
 	*x = CollectorAck{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hannah_wakeword_capture_proto_msgTypes[9]
+		mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -629,7 +629,7 @@ func (x *CollectorAck) String() string {
 func (*CollectorAck) ProtoMessage() {}
 
 func (x *CollectorAck) ProtoReflect() protoreflect.Message {
-	mi := &file_hannah_wakeword_capture_proto_msgTypes[9]
+	mi := &file_hannah_v2_wakeword_capture_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -642,7 +642,7 @@ func (x *CollectorAck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectorAck.ProtoReflect.Descriptor instead.
 func (*CollectorAck) Descriptor() ([]byte, []int) {
-	return file_hannah_wakeword_capture_proto_rawDescGZIP(), []int{9}
+	return file_hannah_v2_wakeword_capture_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CollectorAck) GetMessage() string {
@@ -652,13 +652,12 @@ func (x *CollectorAck) GetMessage() string {
 	return ""
 }
 
-var File_hannah_wakeword_capture_proto protoreflect.FileDescriptor
+var File_hannah_v2_wakeword_capture_proto protoreflect.FileDescriptor
 
-var file_hannah_wakeword_capture_proto_rawDesc = []byte{
-	0x0a, 0x1d, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2f, 0x77, 0x61, 0x6b, 0x65, 0x77, 0x6f, 0x72,
-	0x64, 0x5f, 0x63, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x06, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x1a, 0x14, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2f,
-	0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x57, 0x0a,
+var file_hannah_v2_wakeword_capture_proto_rawDesc = []byte{
+	0x0a, 0x20, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2f, 0x76, 0x32, 0x2f, 0x77, 0x61, 0x6b, 0x65,
+	0x77, 0x6f, 0x72, 0x64, 0x5f, 0x63, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x12, 0x09, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x76, 0x32, 0x22, 0x57, 0x0a,
 	0x17, 0x53, 0x61, 0x74, 0x65, 0x6c, 0x6c, 0x69, 0x74, 0x65, 0x43, 0x61, 0x70, 0x74, 0x75, 0x72,
 	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x76, 0x69,
 	0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x76,
@@ -684,79 +683,78 @@ var file_hannah_wakeword_capture_proto_rawDesc = []byte{
 	0x55, 0x74, 0x74, 0x65, 0x72, 0x61, 0x6e, 0x63, 0x65, 0x22, 0xb4, 0x01, 0x0a, 0x0e, 0x43, 0x61,
 	0x70, 0x74, 0x75, 0x72, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x1b, 0x0a, 0x09,
 	0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x64, 0x12, 0x33, 0x0a, 0x0b, 0x73, 0x61, 0x6d,
-	0x70, 0x6c, 0x65, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12,
-	0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x54, 0x79,
-	0x70, 0x65, 0x52, 0x0a, 0x73, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x36,
-	0x0a, 0x0c, 0x63, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x5f, 0x6d, 0x6f, 0x64, 0x65, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x0e, 0x32, 0x13, 0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x43, 0x61,
-	0x70, 0x74, 0x75, 0x72, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x52, 0x0b, 0x63, 0x61, 0x70, 0x74, 0x75,
-	0x72, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x74, 0x6f, 0x70, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x08, 0x52, 0x04, 0x73, 0x74, 0x6f, 0x70, 0x3a, 0x04, 0x80, 0xb5, 0x18, 0x02,
-	0x22, 0x7e, 0x0a, 0x0a, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x2b,
-	0x0a, 0x05, 0x6e, 0x6f, 0x69, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e,
-	0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x4e, 0x6f, 0x69, 0x73, 0x65, 0x53, 0x61, 0x6d, 0x70,
-	0x6c, 0x65, 0x48, 0x00, 0x52, 0x05, 0x6e, 0x6f, 0x69, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x0a, 0x68,
-	0x65, 0x79, 0x5f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x17, 0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x48, 0x65, 0x79, 0x48, 0x61, 0x6e, 0x6e,
-	0x61, 0x68, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x09, 0x68, 0x65, 0x79, 0x48,
-	0x61, 0x6e, 0x6e, 0x61, 0x68, 0x42, 0x09, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
-	0x22, 0x0d, 0x0a, 0x0b, 0x4e, 0x6f, 0x69, 0x73, 0x65, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x22,
-	0x11, 0x0a, 0x0f, 0x48, 0x65, 0x79, 0x48, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x53, 0x61, 0x6d, 0x70,
-	0x6c, 0x65, 0x22, 0x47, 0x0a, 0x10, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x4d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x28, 0x0a, 0x03, 0x61, 0x63, 0x6b, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x43, 0x6f, 0x6c,
-	0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x41, 0x63, 0x6b, 0x48, 0x00, 0x52, 0x03, 0x61, 0x63, 0x6b,
-	0x42, 0x09, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x22, 0x28, 0x0a, 0x0c, 0x43,
-	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x41, 0x63, 0x6b, 0x12, 0x18, 0x0a, 0x07, 0x6d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x2a, 0x74, 0x0a, 0x0b, 0x43, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65,
-	0x4d, 0x6f, 0x64, 0x65, 0x12, 0x1c, 0x0a, 0x18, 0x43, 0x41, 0x50, 0x54, 0x55, 0x52, 0x45, 0x5f,
-	0x4d, 0x4f, 0x44, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44,
-	0x10, 0x00, 0x12, 0x14, 0x0a, 0x10, 0x43, 0x41, 0x50, 0x54, 0x55, 0x52, 0x45, 0x5f, 0x4d, 0x4f,
-	0x44, 0x45, 0x5f, 0x50, 0x54, 0x54, 0x10, 0x02, 0x12, 0x16, 0x0a, 0x12, 0x43, 0x41, 0x50, 0x54,
-	0x55, 0x52, 0x45, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x5f, 0x50, 0x4c, 0x49, 0x4e, 0x4b, 0x10, 0x03,
-	0x22, 0x04, 0x08, 0x01, 0x10, 0x01, 0x2a, 0x13, 0x43, 0x41, 0x50, 0x54, 0x55, 0x52, 0x45, 0x5f,
-	0x4d, 0x4f, 0x44, 0x45, 0x5f, 0x4d, 0x41, 0x4e, 0x55, 0x41, 0x4c, 0x42, 0x30, 0x5a, 0x2e, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4e, 0x75, 0x72, 0x50, 0x65, 0x63,
-	0x68, 0x2f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67,
-	0x6f, 0x3b, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x64, 0x12, 0x36, 0x0a, 0x0b, 0x73, 0x61, 0x6d,
+	0x70, 0x6c, 0x65, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15,
+	0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x76, 0x32, 0x2e, 0x53, 0x61, 0x6d, 0x70, 0x6c,
+	0x65, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0a, 0x73, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x54, 0x79, 0x70,
+	0x65, 0x12, 0x39, 0x0a, 0x0c, 0x63, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x5f, 0x6d, 0x6f, 0x64,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x16, 0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68,
+	0x2e, 0x76, 0x32, 0x2e, 0x43, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x52,
+	0x0b, 0x63, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x73, 0x74, 0x6f, 0x70, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x04, 0x73, 0x74, 0x6f, 0x70,
+	0x22, 0x84, 0x01, 0x0a, 0x0a, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12,
+	0x2e, 0x0a, 0x05, 0x6e, 0x6f, 0x69, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16,
+	0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x76, 0x32, 0x2e, 0x4e, 0x6f, 0x69, 0x73, 0x65,
+	0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x05, 0x6e, 0x6f, 0x69, 0x73, 0x65, 0x12,
+	0x3b, 0x0a, 0x0a, 0x68, 0x65, 0x79, 0x5f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2e, 0x76, 0x32, 0x2e,
+	0x48, 0x65, 0x79, 0x48, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x48,
+	0x00, 0x52, 0x09, 0x68, 0x65, 0x79, 0x48, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x42, 0x09, 0x0a, 0x07,
+	0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x22, 0x0d, 0x0a, 0x0b, 0x4e, 0x6f, 0x69, 0x73, 0x65,
+	0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x22, 0x11, 0x0a, 0x0f, 0x48, 0x65, 0x79, 0x48, 0x61, 0x6e,
+	0x6e, 0x61, 0x68, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x22, 0x4a, 0x0a, 0x10, 0x43, 0x6f, 0x6c,
+	0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x2b, 0x0a,
+	0x03, 0x61, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x68, 0x61, 0x6e,
+	0x6e, 0x61, 0x68, 0x2e, 0x76, 0x32, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72,
+	0x41, 0x63, 0x6b, 0x48, 0x00, 0x52, 0x03, 0x61, 0x63, 0x6b, 0x42, 0x09, 0x0a, 0x07, 0x70, 0x61,
+	0x79, 0x6c, 0x6f, 0x61, 0x64, 0x22, 0x28, 0x0a, 0x0c, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74,
+	0x6f, 0x72, 0x41, 0x63, 0x6b, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2a,
+	0x59, 0x0a, 0x0b, 0x43, 0x61, 0x70, 0x74, 0x75, 0x72, 0x65, 0x4d, 0x6f, 0x64, 0x65, 0x12, 0x1c,
+	0x0a, 0x18, 0x43, 0x41, 0x50, 0x54, 0x55, 0x52, 0x45, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x5f, 0x55,
+	0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x10,
+	0x43, 0x41, 0x50, 0x54, 0x55, 0x52, 0x45, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x5f, 0x50, 0x54, 0x54,
+	0x10, 0x02, 0x12, 0x16, 0x0a, 0x12, 0x43, 0x41, 0x50, 0x54, 0x55, 0x52, 0x45, 0x5f, 0x4d, 0x4f,
+	0x44, 0x45, 0x5f, 0x50, 0x4c, 0x49, 0x4e, 0x4b, 0x10, 0x03, 0x42, 0x36, 0x5a, 0x34, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4e, 0x75, 0x72, 0x50, 0x65, 0x63, 0x68,
+	0x2f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x2d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67, 0x6f,
+	0x2f, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68, 0x76, 0x32, 0x3b, 0x68, 0x61, 0x6e, 0x6e, 0x61, 0x68,
+	0x76, 0x32, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_hannah_wakeword_capture_proto_rawDescOnce sync.Once
-	file_hannah_wakeword_capture_proto_rawDescData = file_hannah_wakeword_capture_proto_rawDesc
+	file_hannah_v2_wakeword_capture_proto_rawDescOnce sync.Once
+	file_hannah_v2_wakeword_capture_proto_rawDescData = file_hannah_v2_wakeword_capture_proto_rawDesc
 )
 
-func file_hannah_wakeword_capture_proto_rawDescGZIP() []byte {
-	file_hannah_wakeword_capture_proto_rawDescOnce.Do(func() {
-		file_hannah_wakeword_capture_proto_rawDescData = protoimpl.X.CompressGZIP(file_hannah_wakeword_capture_proto_rawDescData)
+func file_hannah_v2_wakeword_capture_proto_rawDescGZIP() []byte {
+	file_hannah_v2_wakeword_capture_proto_rawDescOnce.Do(func() {
+		file_hannah_v2_wakeword_capture_proto_rawDescData = protoimpl.X.CompressGZIP(file_hannah_v2_wakeword_capture_proto_rawDescData)
 	})
-	return file_hannah_wakeword_capture_proto_rawDescData
+	return file_hannah_v2_wakeword_capture_proto_rawDescData
 }
 
-var file_hannah_wakeword_capture_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_hannah_wakeword_capture_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-var file_hannah_wakeword_capture_proto_goTypes = []any{
-	(CaptureMode)(0),                 // 0: hannah.CaptureMode
-	(*SatelliteCaptureRequest)(nil),  // 1: hannah.SatelliteCaptureRequest
-	(*TriggerPlinkRequest)(nil),      // 2: hannah.TriggerPlinkRequest
-	(*SatelliteCaptureResponse)(nil), // 3: hannah.SatelliteCaptureResponse
-	(*SatelliteAudioChunk)(nil),      // 4: hannah.SatelliteAudioChunk
-	(*CaptureCommand)(nil),           // 5: hannah.CaptureCommand
-	(*SampleType)(nil),               // 6: hannah.SampleType
-	(*NoiseSample)(nil),              // 7: hannah.NoiseSample
-	(*HeyHannahSample)(nil),          // 8: hannah.HeyHannahSample
-	(*CollectorMessage)(nil),         // 9: hannah.CollectorMessage
-	(*CollectorAck)(nil),             // 10: hannah.CollectorAck
+var file_hannah_v2_wakeword_capture_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_hannah_v2_wakeword_capture_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_hannah_v2_wakeword_capture_proto_goTypes = []any{
+	(CaptureMode)(0),                 // 0: hannah.v2.CaptureMode
+	(*SatelliteCaptureRequest)(nil),  // 1: hannah.v2.SatelliteCaptureRequest
+	(*TriggerPlinkRequest)(nil),      // 2: hannah.v2.TriggerPlinkRequest
+	(*SatelliteCaptureResponse)(nil), // 3: hannah.v2.SatelliteCaptureResponse
+	(*SatelliteAudioChunk)(nil),      // 4: hannah.v2.SatelliteAudioChunk
+	(*CaptureCommand)(nil),           // 5: hannah.v2.CaptureCommand
+	(*SampleType)(nil),               // 6: hannah.v2.SampleType
+	(*NoiseSample)(nil),              // 7: hannah.v2.NoiseSample
+	(*HeyHannahSample)(nil),          // 8: hannah.v2.HeyHannahSample
+	(*CollectorMessage)(nil),         // 9: hannah.v2.CollectorMessage
+	(*CollectorAck)(nil),             // 10: hannah.v2.CollectorAck
 }
-var file_hannah_wakeword_capture_proto_depIdxs = []int32{
-	6,  // 0: hannah.CaptureCommand.sample_type:type_name -> hannah.SampleType
-	0,  // 1: hannah.CaptureCommand.capture_mode:type_name -> hannah.CaptureMode
-	7,  // 2: hannah.SampleType.noise:type_name -> hannah.NoiseSample
-	8,  // 3: hannah.SampleType.hey_hannah:type_name -> hannah.HeyHannahSample
-	10, // 4: hannah.CollectorMessage.ack:type_name -> hannah.CollectorAck
+var file_hannah_v2_wakeword_capture_proto_depIdxs = []int32{
+	6,  // 0: hannah.v2.CaptureCommand.sample_type:type_name -> hannah.v2.SampleType
+	0,  // 1: hannah.v2.CaptureCommand.capture_mode:type_name -> hannah.v2.CaptureMode
+	7,  // 2: hannah.v2.SampleType.noise:type_name -> hannah.v2.NoiseSample
+	8,  // 3: hannah.v2.SampleType.hey_hannah:type_name -> hannah.v2.HeyHannahSample
+	10, // 4: hannah.v2.CollectorMessage.ack:type_name -> hannah.v2.CollectorAck
 	5,  // [5:5] is the sub-list for method output_type
 	5,  // [5:5] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
@@ -764,14 +762,13 @@ var file_hannah_wakeword_capture_proto_depIdxs = []int32{
 	0,  // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_hannah_wakeword_capture_proto_init() }
-func file_hannah_wakeword_capture_proto_init() {
-	if File_hannah_wakeword_capture_proto != nil {
+func init() { file_hannah_v2_wakeword_capture_proto_init() }
+func file_hannah_v2_wakeword_capture_proto_init() {
+	if File_hannah_v2_wakeword_capture_proto != nil {
 		return
 	}
-	file_hannah_options_proto_init()
 	if !protoimpl.UnsafeEnabled {
-		file_hannah_wakeword_capture_proto_msgTypes[0].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[0].Exporter = func(v any, i int) any {
 			switch v := v.(*SatelliteCaptureRequest); i {
 			case 0:
 				return &v.state
@@ -783,7 +780,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[1].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[1].Exporter = func(v any, i int) any {
 			switch v := v.(*TriggerPlinkRequest); i {
 			case 0:
 				return &v.state
@@ -795,7 +792,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[2].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[2].Exporter = func(v any, i int) any {
 			switch v := v.(*SatelliteCaptureResponse); i {
 			case 0:
 				return &v.state
@@ -807,7 +804,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[3].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[3].Exporter = func(v any, i int) any {
 			switch v := v.(*SatelliteAudioChunk); i {
 			case 0:
 				return &v.state
@@ -819,7 +816,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[4].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[4].Exporter = func(v any, i int) any {
 			switch v := v.(*CaptureCommand); i {
 			case 0:
 				return &v.state
@@ -831,7 +828,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[5].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[5].Exporter = func(v any, i int) any {
 			switch v := v.(*SampleType); i {
 			case 0:
 				return &v.state
@@ -843,7 +840,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[6].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[6].Exporter = func(v any, i int) any {
 			switch v := v.(*NoiseSample); i {
 			case 0:
 				return &v.state
@@ -855,7 +852,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[7].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[7].Exporter = func(v any, i int) any {
 			switch v := v.(*HeyHannahSample); i {
 			case 0:
 				return &v.state
@@ -867,7 +864,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[8].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[8].Exporter = func(v any, i int) any {
 			switch v := v.(*CollectorMessage); i {
 			case 0:
 				return &v.state
@@ -879,7 +876,7 @@ func file_hannah_wakeword_capture_proto_init() {
 				return nil
 			}
 		}
-		file_hannah_wakeword_capture_proto_msgTypes[9].Exporter = func(v any, i int) any {
+		file_hannah_v2_wakeword_capture_proto_msgTypes[9].Exporter = func(v any, i int) any {
 			switch v := v.(*CollectorAck); i {
 			case 0:
 				return &v.state
@@ -892,30 +889,30 @@ func file_hannah_wakeword_capture_proto_init() {
 			}
 		}
 	}
-	file_hannah_wakeword_capture_proto_msgTypes[5].OneofWrappers = []any{
+	file_hannah_v2_wakeword_capture_proto_msgTypes[5].OneofWrappers = []any{
 		(*SampleType_Noise)(nil),
 		(*SampleType_HeyHannah)(nil),
 	}
-	file_hannah_wakeword_capture_proto_msgTypes[8].OneofWrappers = []any{
+	file_hannah_v2_wakeword_capture_proto_msgTypes[8].OneofWrappers = []any{
 		(*CollectorMessage_Ack)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_hannah_wakeword_capture_proto_rawDesc,
+			RawDescriptor: file_hannah_v2_wakeword_capture_proto_rawDesc,
 			NumEnums:      1,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_hannah_wakeword_capture_proto_goTypes,
-		DependencyIndexes: file_hannah_wakeword_capture_proto_depIdxs,
-		EnumInfos:         file_hannah_wakeword_capture_proto_enumTypes,
-		MessageInfos:      file_hannah_wakeword_capture_proto_msgTypes,
+		GoTypes:           file_hannah_v2_wakeword_capture_proto_goTypes,
+		DependencyIndexes: file_hannah_v2_wakeword_capture_proto_depIdxs,
+		EnumInfos:         file_hannah_v2_wakeword_capture_proto_enumTypes,
+		MessageInfos:      file_hannah_v2_wakeword_capture_proto_msgTypes,
 	}.Build()
-	File_hannah_wakeword_capture_proto = out.File
-	file_hannah_wakeword_capture_proto_rawDesc = nil
-	file_hannah_wakeword_capture_proto_goTypes = nil
-	file_hannah_wakeword_capture_proto_depIdxs = nil
+	File_hannah_v2_wakeword_capture_proto = out.File
+	file_hannah_v2_wakeword_capture_proto_rawDesc = nil
+	file_hannah_v2_wakeword_capture_proto_goTypes = nil
+	file_hannah_v2_wakeword_capture_proto_depIdxs = nil
 }

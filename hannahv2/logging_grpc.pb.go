@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: hannah/logging.proto
+// source: hannah/v2/logging.proto
 
-package hannahproto
+package hannahv2
 
 import (
 	context "context"
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LogService_Ship_FullMethodName       = "/hannah.LogService/Ship"
-	LogService_GetSources_FullMethodName = "/hannah.LogService/GetSources"
-	LogService_Export_FullMethodName     = "/hannah.LogService/Export"
+	LogService_Ship_FullMethodName       = "/hannah.v2.LogService/Ship"
+	LogService_GetSources_FullMethodName = "/hannah.v2.LogService/GetSources"
+	LogService_Export_FullMethodName     = "/hannah.v2.LogService/Export"
 )
 
 // LogServiceClient is the client API for LogService service.
@@ -180,7 +180,7 @@ type LogService_ExportServer = grpc.ServerStreamingServer[ExportChunk]
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var LogService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "hannah.LogService",
+	ServiceName: "hannah.v2.LogService",
 	HandlerType: (*LogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -200,5 +200,5 @@ var LogService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "hannah/logging.proto",
+	Metadata: "hannah/v2/logging.proto",
 }

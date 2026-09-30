@@ -7,7 +7,7 @@
 package hannahv1
 
 import (
-	_ "github.com/NurPech/hannah-proto-go/v4"
+	_ "github.com/NurPech/hannah-proto-go/v5"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
