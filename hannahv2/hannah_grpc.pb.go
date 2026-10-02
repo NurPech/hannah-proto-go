@@ -104,6 +104,7 @@ const (
 	HannahService_CreateMessage_FullMethodName                 = "/hannah.v2.HannahService/CreateMessage"
 	HannahService_ListMessages_FullMethodName                  = "/hannah.v2.HannahService/ListMessages"
 	HannahService_DeleteMessage_FullMethodName                 = "/hannah.v2.HannahService/DeleteMessage"
+	HannahService_Heartbeat_FullMethodName                     = "/hannah.v2.HannahService/Heartbeat"
 )
 
 // HannahServiceClient is the client API for HannahService service.
@@ -309,6 +310,9 @@ type HannahServiceClient interface {
 	CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	ListMessages(ctx context.Context, in *ListMessagesRequest, opts ...grpc.CallOption) (*ListMessagesResponse, error)
 	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Liveness signal from a component. The component names itself in the call metadata
+	// (x-component, x-component-version, x-component-id), the message carries nothing yet.
+	Heartbeat(ctx context.Context, in *HeartbeatRequest, opts ...grpc.CallOption) (*HeartbeatResponse, error)
 }
 
 type hannahServiceClient struct {
@@ -1226,6 +1230,16 @@ func (c *hannahServiceClient) DeleteMessage(ctx context.Context, in *DeleteMessa
 	return out, nil
 }
 
+func (c *hannahServiceClient) Heartbeat(ctx context.Context, in *HeartbeatRequest, opts ...grpc.CallOption) (*HeartbeatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HeartbeatResponse)
+	err := c.cc.Invoke(ctx, HannahService_Heartbeat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HannahServiceServer is the server API for HannahService service.
 // All implementations must embed UnimplementedHannahServiceServer
 // for forward compatibility.
@@ -1429,6 +1443,9 @@ type HannahServiceServer interface {
 	CreateMessage(context.Context, *CreateMessageRequest) (*StatusResponse, error)
 	ListMessages(context.Context, *ListMessagesRequest) (*ListMessagesResponse, error)
 	DeleteMessage(context.Context, *DeleteMessageRequest) (*StatusResponse, error)
+	// Liveness signal from a component. The component names itself in the call metadata
+	// (x-component, x-component-version, x-component-id), the message carries nothing yet.
+	Heartbeat(context.Context, *HeartbeatRequest) (*HeartbeatResponse, error)
 	mustEmbedUnimplementedHannahServiceServer()
 }
 
@@ -1693,6 +1710,9 @@ func (UnimplementedHannahServiceServer) ListMessages(context.Context, *ListMessa
 }
 func (UnimplementedHannahServiceServer) DeleteMessage(context.Context, *DeleteMessageRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMessage not implemented")
+}
+func (UnimplementedHannahServiceServer) Heartbeat(context.Context, *HeartbeatRequest) (*HeartbeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Heartbeat not implemented")
 }
 func (UnimplementedHannahServiceServer) mustEmbedUnimplementedHannahServiceServer() {}
 func (UnimplementedHannahServiceServer) testEmbeddedByValue()                       {}
@@ -3140,6 +3160,24 @@ func _HannahService_DeleteMessage_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HannahService_Heartbeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HeartbeatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).Heartbeat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_Heartbeat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).Heartbeat(ctx, req.(*HeartbeatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HannahService_ServiceDesc is the grpc.ServiceDesc for HannahService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3442,6 +3480,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteMessage",
 			Handler:    _HannahService_DeleteMessage_Handler,
+		},
+		{
+			MethodName: "Heartbeat",
+			Handler:    _HannahService_Heartbeat_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
