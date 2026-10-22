@@ -43,6 +43,7 @@ const (
 	HannahService_SetSatelliteDisplayName_FullMethodName       = "/hannah.v2.HannahService/SetSatelliteDisplayName"
 	HannahService_SetSatelliteOwner_FullMethodName             = "/hannah.v2.HannahService/SetSatelliteOwner"
 	HannahService_SetSatelliteSmalltalkFollowup_FullMethodName = "/hannah.v2.HannahService/SetSatelliteSmalltalkFollowup"
+	HannahService_SetSatelliteLedBrightness_FullMethodName     = "/hannah.v2.HannahService/SetSatelliteLedBrightness"
 	HannahService_DeleteSatellite_FullMethodName               = "/hannah.v2.HannahService/DeleteSatellite"
 	HannahService_GetRooms_FullMethodName                      = "/hannah.v2.HannahService/GetRooms"
 	HannahService_GetGroups_FullMethodName                     = "/hannah.v2.HannahService/GetGroups"
@@ -156,6 +157,9 @@ type HannahServiceClient interface {
 	// Toggle whether the satellite's mic reopens after a Smalltalk answer instead of
 	// waiting for wake-word/PTT again (silence-timeout lives in the satellite firmware). #158
 	SetSatelliteSmalltalkFollowup(ctx context.Context, in *SetSatelliteSmalltalkFollowupRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Set the brightness of the satellite's LED ring (0-100 percent, 0 = ring off). Core stores
+	// the value per satellite and passes it on to the satellite. #27
+	SetSatelliteLedBrightness(ctx context.Context, in *SetSatelliteLedBrightnessRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// Delete existing satellite
 	DeleteSatellite(ctx context.Context, in *DeleteSatelliteRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// --- Rooms/Groups (Admin-UI, #27 Phase 1) ---
@@ -557,6 +561,16 @@ func (c *hannahServiceClient) SetSatelliteSmalltalkFollowup(ctx context.Context,
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, HannahService_SetSatelliteSmalltalkFollowup_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hannahServiceClient) SetSatelliteLedBrightness(ctx context.Context, in *SetSatelliteLedBrightnessRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, HannahService_SetSatelliteLedBrightness_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1289,6 +1303,9 @@ type HannahServiceServer interface {
 	// Toggle whether the satellite's mic reopens after a Smalltalk answer instead of
 	// waiting for wake-word/PTT again (silence-timeout lives in the satellite firmware). #158
 	SetSatelliteSmalltalkFollowup(context.Context, *SetSatelliteSmalltalkFollowupRequest) (*StatusResponse, error)
+	// Set the brightness of the satellite's LED ring (0-100 percent, 0 = ring off). Core stores
+	// the value per satellite and passes it on to the satellite. #27
+	SetSatelliteLedBrightness(context.Context, *SetSatelliteLedBrightnessRequest) (*StatusResponse, error)
 	// Delete existing satellite
 	DeleteSatellite(context.Context, *DeleteSatelliteRequest) (*StatusResponse, error)
 	// --- Rooms/Groups (Admin-UI, #27 Phase 1) ---
@@ -1527,6 +1544,9 @@ func (UnimplementedHannahServiceServer) SetSatelliteOwner(context.Context, *SetS
 }
 func (UnimplementedHannahServiceServer) SetSatelliteSmalltalkFollowup(context.Context, *SetSatelliteSmalltalkFollowupRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetSatelliteSmalltalkFollowup not implemented")
+}
+func (UnimplementedHannahServiceServer) SetSatelliteLedBrightness(context.Context, *SetSatelliteLedBrightnessRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetSatelliteLedBrightness not implemented")
 }
 func (UnimplementedHannahServiceServer) DeleteSatellite(context.Context, *DeleteSatelliteRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSatellite not implemented")
@@ -2163,6 +2183,24 @@ func _HannahService_SetSatelliteSmalltalkFollowup_Handler(srv interface{}, ctx c
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(HannahServiceServer).SetSatelliteSmalltalkFollowup(ctx, req.(*SetSatelliteSmalltalkFollowupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HannahService_SetSatelliteLedBrightness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetSatelliteLedBrightnessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HannahServiceServer).SetSatelliteLedBrightness(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HannahService_SetSatelliteLedBrightness_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HannahServiceServer).SetSatelliteLedBrightness(ctx, req.(*SetSatelliteLedBrightnessRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3280,6 +3318,10 @@ var HannahService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetSatelliteSmalltalkFollowup",
 			Handler:    _HannahService_SetSatelliteSmalltalkFollowup_Handler,
+		},
+		{
+			MethodName: "SetSatelliteLedBrightness",
+			Handler:    _HannahService_SetSatelliteLedBrightness_Handler,
 		},
 		{
 			MethodName: "DeleteSatellite",
